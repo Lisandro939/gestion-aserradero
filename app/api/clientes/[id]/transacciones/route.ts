@@ -6,10 +6,11 @@ import { eq, desc } from "drizzle-orm";
 // GET - Obtener transacciones de un cliente
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const clienteId = parseInt(params.id);
+		const { id: idString } = await params;
+		const clienteId = parseInt(idString);
 
 		if (isNaN(clienteId)) {
 			return NextResponse.json({ error: "ID inválido" }, { status: 400 });
@@ -43,10 +44,11 @@ export async function GET(
 // POST - Crear nueva transacción (compra o pago)
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const clienteId = parseInt(params.id);
+		const { id: idString } = await params;
+		const clienteId = parseInt(idString);
 
 		if (isNaN(clienteId)) {
 			return NextResponse.json({ error: "ID inválido" }, { status: 400 });

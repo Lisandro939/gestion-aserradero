@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { clientes } from "@/lib/db/schema";
-import { eq, like, or, sql } from "drizzle-orm";
+import { eq, like, or, and, sql } from "drizzle-orm";
 
 // GET - Obtener todos los clientes o buscar
 export async function GET(request: NextRequest) {
@@ -10,9 +10,6 @@ export async function GET(request: NextRequest) {
 		const search = searchParams.get("search");
 		const estado = searchParams.get("estado");
 
-		let query = db.select().from(clientes);
-
-		// Aplicar filtros
 		const conditions = [];
 
 		if (search) {
@@ -29,9 +26,10 @@ export async function GET(request: NextRequest) {
 			conditions.push(eq(clientes.estado, estado as any));
 		}
 
-		if (conditions.length > 0) {
-			query = query.where(sql`${sql.join(conditions, sql` AND `)}`);
-		}
+		const query = db
+			.select()
+			.from(clientes)
+			.where(conditions.length > 0 ? and(...conditions) : undefined);
 
 		const result = await query;
 

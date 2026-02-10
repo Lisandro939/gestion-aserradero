@@ -6,10 +6,11 @@ import { eq } from "drizzle-orm";
 // GET - Obtener un remito por ID con sus items
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const id = parseInt(params.id);
+		const { id: idString } = await params;
+		const id = parseInt(idString);
 
 		if (isNaN(id)) {
 			return NextResponse.json({ error: "ID inválido" }, { status: 400 });
@@ -82,10 +83,11 @@ export async function GET(
 // PUT - Actualizar estado del remito
 export async function PUT(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const id = parseInt(params.id);
+		const { id: idString } = await params;
+		const id = parseInt(idString);
 
 		if (isNaN(id)) {
 			return NextResponse.json({ error: "ID inválido" }, { status: 400 });
@@ -134,10 +136,11 @@ export async function PUT(
 // DELETE - Eliminar un remito
 export async function DELETE(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const id = parseInt(params.id);
+		const { id: idString } = await params;
+		const id = parseInt(idString);
 
 		if (isNaN(id)) {
 			return NextResponse.json({ error: "ID inválido" }, { status: 400 });
