@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
+@theme {
+	--color-primary: var(--color-amber-600);
+	--color-primary-dark: var(--color-amber-700);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	--background: #fafaf9;
+	--foreground: #1c1917;
+	--card: #ffffff;
+	--card-foreground: #1c1917;
+	--border: #e7e5e4;
+}
+
+.dark {
+	--background: #0c0a09;
+	--foreground: #f5f5f4;
+	--card: #141413;
+	--card-foreground: #f5f5f4;
+	--border: #292524;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-border: var(--border);
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
+}
+
+/* Glassmorphism utility */
+.glass {
+	@apply bg-white/70 backdrop-blur-md dark:bg-stone-900/70 border border-stone-200/50 dark:border-stone-800/20;
 }
