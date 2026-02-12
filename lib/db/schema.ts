@@ -1,12 +1,12 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-// Tabla de usuarios
+// Users table
 export const users = sqliteTable("users", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
 	email: text("email").notNull().unique(),
 	name: text("name").notNull(),
-	password: text("password").notNull(), // Hasheada con bcrypt
+	password: text("password").notNull(), // Hashed with bcrypt
 	role: text("role", { enum: ["admin", "user"] })
 		.notNull()
 		.default("user"),
@@ -21,23 +21,23 @@ export const users = sqliteTable("users", {
 		.default(sql`(unixepoch())`),
 });
 
-// Tabla de clientes
-export const clientes = sqliteTable("clientes", {
+// Customers table
+export const customers = sqliteTable("customers", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	nombre: text("nombre").notNull(),
+	name: text("name").notNull(),
 	email: text("email").notNull(),
-	telefono: text("telefono").notNull(),
-	direccion: text("direccion").notNull(),
-	cuit: text("cuit").notNull().unique(),
-	saldoActual: integer("saldo_actual").notNull().default(0), // En centavos
-	limiteCredito: integer("limite_credito").notNull().default(0), // En centavos
-	estado: text("estado", { enum: ["activo", "inactivo", "moroso"] })
+	phone: text("phone").notNull(),
+	address: text("address").notNull(),
+	taxId: text("tax_id").notNull().unique(), // CUIT
+	currentBalance: integer("current_balance").notNull().default(0), // In cents
+	creditLimit: integer("credit_limit").notNull().default(0), // In cents
+	status: text("status", { enum: ["active", "inactive", "overdue"] })
 		.notNull()
-		.default("activo"),
-	fechaAlta: integer("fecha_alta", { mode: "timestamp" })
+		.default("active"),
+	registrationDate: integer("registration_date", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
-	ultimaCompra: integer("ultima_compra", { mode: "timestamp" }),
+	lastPurchaseDate: integer("last_purchase_date", { mode: "timestamp" }),
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
@@ -46,34 +46,34 @@ export const clientes = sqliteTable("clientes", {
 		.default(sql`(unixepoch())`),
 });
 
-// Tabla de transacciones (historial de compras y pagos de clientes)
-export const transacciones = sqliteTable("transacciones", {
+// Transactions table (history of purchases and payments)
+export const transactions = sqliteTable("transactions", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	clienteId: integer("cliente_id")
+	customerId: integer("customer_id")
 		.notNull()
-		.references(() => clientes.id, { onDelete: "cascade" }),
-	tipo: text("tipo", { enum: ["compra", "pago"] }).notNull(),
-	fecha: integer("fecha", { mode: "timestamp" })
+		.references(() => customers.id, { onDelete: "cascade" }),
+	type: text("type", { enum: ["purchase", "payment"] }).notNull(),
+	date: integer("date", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
-	concepto: text("concepto").notNull(),
-	monto: integer("monto").notNull(), // En centavos, negativo para compras, positivo para pagos
-	saldo: integer("saldo").notNull(), // Saldo después de la transacción, en centavos
+	description: text("description").notNull(),
+	amount: integer("amount").notNull(), // In cents, negative for purchases, positive for payments
+	balance: integer("balance").notNull(), // Balance after transaction, in cents
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
 });
 
-// Tabla de inventario
-export const inventario = sqliteTable("inventario", {
+// Products table (Inventory)
+export const products = sqliteTable("products", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	nombre: text("nombre").notNull(),
-	descripcion: text("descripcion"),
-	categoria: text("categoria").notNull(),
-	unidad: text("unidad").notNull(), // m3, unidad, kg, etc.
+	name: text("name").notNull(),
+	description: text("description"),
+	category: text("category").notNull(),
+	unit: text("unit").notNull(), // m3, unit, kg, etc.
 	stock: integer("stock").notNull().default(0),
-	stockMinimo: integer("stock_minimo").notNull().default(0),
-	precioUnitario: integer("precio_unitario").notNull(), // En centavos
+	minStock: integer("min_stock").notNull().default(0),
+	unitPrice: integer("unit_price").notNull(), // In cents
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
@@ -82,102 +82,106 @@ export const inventario = sqliteTable("inventario", {
 		.default(sql`(unixepoch())`),
 });
 
-// Tabla de remitos
-export const remitos = sqliteTable("remitos", {
+// Delivery Notes table (Remitos)
+export const deliveryNotes = sqliteTable("delivery_notes", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	numero: text("numero").notNull().unique(),
-	clienteId: integer("cliente_id")
+	number: text("number").notNull().unique(),
+	customerId: integer("customer_id")
 		.notNull()
-		.references(() => clientes.id),
-	fecha: integer("fecha", { mode: "timestamp" })
+		.references(() => customers.id),
+	date: integer("date", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
-	estado: text("estado", { enum: ["pendiente", "entregado", "cancelado"] })
+	salePoint: integer("sale_point").notNull().default(1),
+	status: text("status", { enum: ["pending", "delivered", "cancelled"] })
 		.notNull()
-		.default("pendiente"),
-	total: integer("total").notNull(), // En centavos
-	observaciones: text("observaciones"),
+		.default("pending"),
+	total: integer("total").notNull(), // In cents
+	notes: text("notes"),
 	createdAt: integer("created_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
 	updatedAt: integer("updated_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
+	deletedAt: integer("deleted_at", { mode: "timestamp" }),
 });
 
-// Tabla de items de remitos
-export const remitoItems = sqliteTable("remito_items", {
+// Delivery Note Items table
+export const deliveryNoteItems = sqliteTable("delivery_note_items", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	remitoId: integer("remito_id")
+	deliveryNoteId: integer("delivery_note_id")
 		.notNull()
-		.references(() => remitos.id, { onDelete: "cascade" }),
-	productoId: integer("producto_id")
-		.notNull()
-		.references(() => inventario.id),
-	cantidad: integer("cantidad").notNull(),
-	precioUnitario: integer("precio_unitario").notNull(), // En centavos
-	subtotal: integer("subtotal").notNull(), // En centavos
+		.references(() => deliveryNotes.id, { onDelete: "cascade" }),
+	productId: integer("product_id")
+		.references(() => products.id), // Nullable now
+	description: text("description").notNull(), // Added description
+	quantity: integer("quantity").notNull(),
+	unitPrice: integer("unit_price").default(0), // In cents, default 0
+	subtotal: integer("subtotal").default(0), // In cents, default 0
 });
 
-// Tipos TypeScript inferidos
+// Invoices table (Facturas)
+export const invoices = sqliteTable("invoices", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	quoteNumber: text("quote_number"),
+	date: integer("date", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	salePoint: integer("sale_point").notNull().default(1),
+	customerName: text("customer_name").notNull(), // Free text or copied
+	customerId: integer("customer_id").references(() => customers.id), // Optional
+	address: text("address"),
+	city: text("city"),
+	phone: text("phone"),
+	movementType: text("movement_type"),
+	salesperson: text("salesperson"),
+	notes: text("notes"),
+	total: integer("total").notNull(), // In cents
+	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	updatedAt: integer("updated_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	deletedAt: integer("deleted_at", { mode: "timestamp" }),
+});
+
+// Invoice Items table
+export const invoiceItems = sqliteTable("invoice_items", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	invoiceId: integer("invoice_id")
+		.notNull()
+		.references(() => invoices.id, { onDelete: "cascade" }),
+	quantity: text("quantity").notNull(), // Stored as text for flexibility
+	description: text("description").notNull(),
+	code: text("code"),
+	unitPrice: integer("unit_price").notNull(), // In cents
+	discount: text("discount"), // Discount percentage
+	amount: integer("amount").notNull(), // Subtotal in cents
+});
+
+// Inferred Types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
-export type Cliente = typeof clientes.$inferSelect;
-export type NewCliente = typeof clientes.$inferInsert;
+export type Customer = typeof customers.$inferSelect;
+export type NewCustomer = typeof customers.$inferInsert;
 
-export type Transaccion = typeof transacciones.$inferSelect;
-export type NewTransaccion = typeof transacciones.$inferInsert;
+export type Transaction = typeof transactions.$inferSelect;
+export type NewTransaction = typeof transactions.$inferInsert;
 
-export type Inventario = typeof inventario.$inferSelect;
-export type NewInventario = typeof inventario.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
 
-export type Remito = typeof remitos.$inferSelect;
-export type NewRemito = typeof remitos.$inferInsert;
+export type DeliveryNote = typeof deliveryNotes.$inferSelect;
+export type NewDeliveryNote = typeof deliveryNotes.$inferInsert;
 
-export type RemitoItem = typeof remitoItems.$inferSelect;
-export type NewRemitoItem = typeof remitoItems.$inferInsert;
+export type DeliveryNoteItem = typeof deliveryNoteItems.$inferSelect;
+export type NewDeliveryNoteItem = typeof deliveryNoteItems.$inferInsert;
 
-// Tabla de facturas
-export const facturas = sqliteTable("facturas", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	presupuesto: text("presupuesto"),
-	fecha: integer("fecha", { mode: "timestamp" })
-		.notNull()
-		.default(sql`(unixepoch())`),
-	cliente: text("cliente").notNull(), // Nombre del cliente (texto libre o copiado)
-	clienteId: integer("cliente_id").references(() => clientes.id), // Opcional, si se selecciona de la lista
-	domicilio: text("domicilio"),
-	localidad: text("localidad"),
-	telefono: text("telefono"),
-	mov: text("mov"),
-	vendedor: text("vendedor"),
-	observaciones: text("observaciones"),
-	total: integer("total").notNull(), // En centavos
-	createdAt: integer("created_at", { mode: "timestamp" })
-		.notNull()
-		.default(sql`(unixepoch())`),
-	updatedAt: integer("updated_at", { mode: "timestamp" })
-		.notNull()
-		.default(sql`(unixepoch())`),
-});
+export type Invoice = typeof invoices.$inferSelect;
+export type NewInvoice = typeof invoices.$inferInsert;
 
-// Tabla de items de facturas
-export const facturaItems = sqliteTable("factura_items", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	facturaId: integer("factura_id")
-		.notNull()
-		.references(() => facturas.id, { onDelete: "cascade" }),
-	cantidad: text("cantidad").notNull(), // Guardamos como texto para flexibilidad o decimales
-	descripcion: text("descripcion").notNull(),
-	codigo: text("codigo"),
-	precioUnitario: integer("precio_unitario").notNull(), // En centavos
-	dto: text("dto"), // Porcentaje de descuento (texto para preservar input)
-	importe: integer("importe").notNull(), // Subtotal en centavos
-});
-
-export type Factura = typeof facturas.$inferSelect;
-export type NewFactura = typeof facturas.$inferInsert;
-
-export type FacturaItem = typeof facturaItems.$inferSelect;
-export type NewFacturaItem = typeof facturaItems.$inferInsert;
+export type InvoiceItem = typeof invoiceItems.$inferSelect;
+export type NewInvoiceItem = typeof invoiceItems.$inferInsert;

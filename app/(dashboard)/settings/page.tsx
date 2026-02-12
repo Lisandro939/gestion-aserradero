@@ -309,7 +309,7 @@ export default function SettingsPage() {
 											disabled={
 												isLoading
 											}
-											className="ml-auto flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-2.5 text-sm font-bold text-white hover:bg-stone-800 dark:bg-white dark:text-stone-900"
+											className="cursor-pointer ml-auto flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-2.5 text-sm font-bold text-white hover:bg-stone-300 dark:bg-white dark:text-stone-900"
 										>
 											{isLoading ? (
 												<Loader2 className="h-4 w-4 animate-spin" />

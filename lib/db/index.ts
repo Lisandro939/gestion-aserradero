@@ -1,6 +1,10 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
+import * as relations from "./relations";
+
+const fullSchema = { ...schema, ...relations };
+
 
 // Crear cliente de Turso
 const client = createClient({
@@ -9,4 +13,4 @@ const client = createClient({
 });
 
 // Crear instancia de Drizzle
-export const db = drizzle(client, { schema });
+export const db = drizzle(client, { schema: fullSchema });

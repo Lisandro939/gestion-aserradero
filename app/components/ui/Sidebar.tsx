@@ -20,9 +20,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
 	{ name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-	{ name: "Clientes", href: "/clientes", icon: Users },
-	{ name: "Remitos", href: "/remitos", icon: FileText },
-	{ name: "Facturas", href: "/facturas", icon: DollarSign },
+	{ name: "Clientes", href: "/customers", icon: Users },
+	{ name: "Remitos", href: "/delivery-notes", icon: FileText },
+	{ name: "Facturas", href: "/invoices", icon: DollarSign },
 	{ name: "Configuración", href: "/settings", icon: Settings },
 ];
 
@@ -112,7 +112,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 					<div className="mt-auto space-y-4 pt-6">
 						<button
 							onClick={() => dispatch(logout())}
-							className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/10"
+							className="cursor-pointer flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/10"
 						>
 							<LogOut className="h-5 w-5" />
 							Cerrar Sesión

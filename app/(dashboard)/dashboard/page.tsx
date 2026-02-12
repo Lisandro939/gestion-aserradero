@@ -163,14 +163,14 @@ export default function DashboardPage() {
 					</div>
 					<div className="space-y-2 md:space-y-3">
 						<a
-							href="/clientes"
+							href="/customers"
 							className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group"
 						>
 							<div className="flex items-center gap-2 md:gap-3">
 								<Users className="h-4 w-4 md:h-5 md:w-5 text-stone-400 group-hover:text-amber-600 transition-colors" />
 								<div>
 									<p className="text-xs md:text-sm font-bold text-[var(--card-foreground)]">
-										Gestión de Clientes
+										Gestión de clientes
 									</p>
 									<p className="text-[10px] md:text-xs text-stone-500">
 										Ver y administrar clientes
@@ -181,7 +181,7 @@ export default function DashboardPage() {
 						</a>
 
 						<a
-							href="/remitos"
+							href="/delivery-notes"
 							className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group"
 						>
 							<div className="flex items-center gap-2 md:gap-3">
@@ -199,7 +199,7 @@ export default function DashboardPage() {
 						</a>
 
 						<a
-							href="/facturas"
+							href="/invoices"
 							className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group"
 						>
 							<div className="flex items-center gap-2 md:gap-3">
@@ -231,9 +231,8 @@ export default function DashboardPage() {
 						<div className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group">
 							<div>
 								<p className="text-xs md:text-sm font-bold text-[var(--card-foreground)]">
-									Base de Datos
+									Base de datos
 								</p>
-								<p className="text-[10px] md:text-xs text-stone-500">Turso SQLite</p>
 							</div>
 							<div className="flex items-center gap-2">
 								<div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -246,22 +245,7 @@ export default function DashboardPage() {
 						<div className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group">
 							<div>
 								<p className="text-xs md:text-sm font-bold text-[var(--card-foreground)]">
-									APIs
-								</p>
-								<p className="text-[10px] md:text-xs text-stone-500">17 endpoints activos</p>
-							</div>
-							<div className="flex items-center gap-2">
-								<div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-								<span className="text-[10px] md:text-xs font-bold text-emerald-600">
-									Operativo
-								</span>
-							</div>
-						</div>
-
-						<div className="flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl border border-stone-100 bg-[var(--card)] transition-all group">
-							<div>
-								<p className="text-xs md:text-sm font-bold text-[var(--card-foreground)]">
-									Última Sincronización
+									Última sincronización
 								</p>
 								<p className="text-[10px] md:text-xs text-stone-500">
 									{new Date().toLocaleString("es-AR")}
