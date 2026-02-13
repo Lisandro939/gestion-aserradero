@@ -2,53 +2,60 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Download, FileText, User, MapPin, Phone, CreditCard, ChevronLeft } from "lucide-react";
-import { generateInvoicePDF, InvoiceData } from "@/app/components/InvoicePDF";
+import { ArrowLeft, Download, FileText, Loader2 } from "lucide-react";
+import { generateInvoicePDF, getInvoiceDoc, InvoiceData } from "@/app/components/InvoicePDF";
+import { cn } from "@/lib/utils";
 
 export default function InvoiceDetailPage() {
 	const params = useParams();
 	const router = useRouter();
-	const [invoice, setInvoice] = useState<any>(null);
+	const id = params.id as string;
+
 	const [loading, setLoading] = useState(true);
+	const [invoice, setInvoice] = useState<any>(null);
+	const [activeTab, setActiveTab] = useState<"info" | "pdf">("info");
 	const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-	const formatDate = (dateString: string | Date | undefined) => {
-		if (!dateString) return "-";
-		const date = new Date(dateString);
-		const day = date.getUTCDate().toString().padStart(2, "0");
-		const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-		const year = date.getUTCFullYear();
-		return `${day}/${month}/${year}`;
-	};
-
 	useEffect(() => {
-		if (params.id) {
-			fetchInvoice(params.id as string);
+		if (id) {
+			fetchInvoice();
 		}
-	}, [params.id]);
+	}, [id]);
 
-	const fetchInvoice = async (id: string) => {
+	const fetchInvoice = async () => {
 		try {
-			// Reuse the generic fetch all endpoint but ideally we should have a specific one
-			// Or filter the list.
-			// Currently GET /api/invoices returns all.
-			// Let's assume we can filter or find in the list.
-			// A specific endpoint /api/invoices/[id] would be better but consistent with delivery notes we might use query param?
-			// But wait, delivery notes uses /api/delivery-notes?id=... for DELETE.
-			// GET /api/delivery-notes returns all.
-			// Let's try to fetch all and find, or implement GET by ID.
-			// I'll implement finding in all for now as I haven't changed the GET endpoint to support single ID fetching yet.
-			// Actually I should update the GET endpoint to support filtering by ID for efficiency.
-			// But for now, let's fetch all and filter client side to be safe with current API.
+			setLoading(true);
+			const res = await fetch(`/api/invoices/${id}`);
+			const data = await res.json();
 
-			const response = await fetch(`/api/invoices/${id}`);
-			if (response.ok) {
-				const data = await response.json();
+			if (data) {
 				setInvoice(data);
-				// generatePDFPreview(data); // Not really generating preview anymore, just setting data
+				// Generate PDF Blob for preview
+				const pdfData: InvoiceData = {
+					budgetNumber: data.budgetNumber || data.quoteNumber || "00000000",
+					date: new Date(data.date).toLocaleDateString("es-AR"),
+					salePoint: data.salePoint?.toString().padStart(3, "0") || "001",
+					customer: data.customerName || data.customer || "Consumidor Final",
+					address: data.address || "",
+					city: data.city || "",
+					phone: data.phone || "",
+					movementType: data.movementType || "",
+					salesperson: data.salesperson || "Administración",
+					items: data.items || [],
+					notes: data.notes || "",
+				};
+
+				try {
+					const doc = await getInvoiceDoc(pdfData);
+					const blob = doc.output("blob");
+					const url = URL.createObjectURL(blob);
+					setPdfUrl(url);
+				} catch (err) {
+					console.error("Error creating PDF preview:", err);
+				}
+
 			} else {
-				// handle not found or error
-				console.error("Invoice not found");
+				// Handle not found
 			}
 		} catch (error) {
 			console.error("Error fetching invoice:", error);
@@ -57,221 +64,233 @@ export default function InvoiceDetailPage() {
 		}
 	};
 
-
-
 	const handleBack = () => {
 		router.back();
 	};
 
+	const formatDate = (dateString: string | Date | undefined) => {
+		if (!dateString) return "-";
+		const date = new Date(dateString);
+		return date.toLocaleDateString("es-AR", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+		});
+	};
+
+	const formatCurrency = (amount: number) => {
+		return new Intl.NumberFormat("es-AR", {
+			style: "currency",
+			currency: "ARS",
+		}).format(amount);
+	};
+
+	const handleDownload = () => {
+		if (!invoice) return;
+		const pdfData: InvoiceData = {
+			budgetNumber: invoice.budgetNumber || invoice.quoteNumber || "00000000",
+			date: new Date(invoice.date).toLocaleDateString("es-AR"),
+			salePoint: invoice.salePoint?.toString().padStart(3, "0") || "001",
+			customer: invoice.customerName || invoice.customer || "Consumidor Final",
+			address: invoice.address || "",
+			city: invoice.city || "",
+			phone: invoice.phone || "",
+			movementType: invoice.movementType || "",
+			salesperson: invoice.salesperson || "Administración",
+			items: invoice.items || [],
+			notes: invoice.notes || "",
+		};
+		generateInvoicePDF(pdfData);
+	};
+
 	if (loading) {
-		return <div className="p-8 text-center text-stone-500">Cargando factura...</div>;
+		return (
+			<div className="flex items-center justify-center h-screen bg-[var(--background)]">
+				<Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+			</div>
+		);
 	}
 
 	if (!invoice) {
-		return <div className="p-8 text-center text-stone-500">Factura no encontrada</div>;
+		return (
+			<div className="flex flex-col items-center justify-center h-screen gap-4 bg-[var(--background)]">
+				<p className="text-stone-500">Factura no encontrada</p>
+				<button onClick={handleBack} className="text-amber-600 font-bold hover:underline">
+					Volver a la lista
+				</button>
+			</div>
+		);
 	}
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<div className="flex items-center gap-4">
-				<button
-					onClick={handleBack}
-					className="cursor-pointer p-2 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
-				>
-					<ArrowLeft className="h-5 w-5" />
-				</button>
-				<div>
-					<h1 className="text-2xl font-bold text-[var(--card-foreground)]">
-						Factura #{invoice.quoteNumber}
-					</h1>
-					<p className="text-sm text-stone-500">
-						Detalles del documento
-					</p>
+		<div className="min-h-screen bg-[var(--background)]">
+			<div className="mx-auto space-y-6">
+				{/* Header */}
+				<div className="flex items-center gap-4">
+					<button
+						onClick={handleBack}
+						className="cursor-pointer p-2 rounded-xl bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--secondary-card)] transition-colors shadow-sm"
+					>
+						<ArrowLeft className="h-5 w-5" />
+					</button>
+					<div>
+						<h1 className="text-2xl font-bold text-[var(--card-foreground)]">
+							{invoice.quoteNumber ? `Presupuesto #${invoice.quoteNumber}` : "Detalle de Factura"}
+						</h1>
+						<div className="flex items-center gap-2 text-sm text-stone-500">
+							<span className="flex items-center gap-1">
+								<FileText className="h-3 w-3" /> {formatDate(invoice.date)}
+							</span>
+							<span>•</span>
+							<span>{invoice.customerName}</span>
+						</div>
+					</div>
 				</div>
-			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{/* Details Column */}
-				<div className="space-y-6">
-					{/* Basic Info */}
-					<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
-						<h2 className="mb-4 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs text-amber-600 dark:bg-amber-900/30">
-								<FileText className="h-4 w-4" />
-							</div>
-							Información General
-						</h2>
-						<div className="grid grid-cols-2 gap-4">
-							<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50">
-								<label className="text-xs text-stone-400 block font-medium uppercase mb-1">Fecha</label>
-								<p className="font-bold text-stone-800 dark:text-stone-200">
-									{formatDate(invoice.date)}
-								</p>
-							</div>
-							<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50">
-								<label className="text-xs text-stone-400 block font-medium uppercase mb-1">Punto de Venta</label>
-								<p className="font-bold text-stone-800 dark:text-stone-200">
-									{invoice.salePoint?.toString().padStart(3, "0")}
-								</p>
-							</div>
-							<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50 col-span-2">
-								<label className="text-xs text-stone-400 block font-medium uppercase mb-1">Total</label>
-								<p className="font-bold text-xl text-amber-600 dark:text-amber-500">
-									${invoice.total?.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
-								</p>
-							</div>
-						</div>
-					</div>
+				{/* Tabs */}
+				<div className="flex p-1 bg-[var(--muted)] rounded-xl w-fit">
+					<button
+						onClick={() => setActiveTab("info")}
+						className={cn(
+							"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all",
+							activeTab === "info"
+								? "bg-[var(--card)] text-amber-600 shadow-sm"
+								: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
+						)}
+					>
+						Información
+					</button>
+					<button
+						onClick={() => setActiveTab("pdf")}
+						className={cn(
+							"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all",
+							activeTab === "pdf"
+								? "bg-[var(--card)] text-amber-600 shadow-sm"
+								: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
+						)}
+					>
+						Visualizar PDF
+					</button>
+				</div>
 
-					{/* Customer Info */}
-					<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
-						<h2 className="mb-4 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-xs text-blue-600 dark:bg-blue-900/30">
-								<User className="h-4 w-4" />
-							</div>
-							Cliente
-						</h2>
-						<div className="space-y-4">
-							<div className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50">
-								<div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-									<User className="h-4 w-4" />
-								</div>
-								<div>
-									<p className="text-sm font-bold text-stone-800 dark:text-stone-200">
-										{invoice.customerName || invoice.customer || "Consumidor Final"}
-									</p>
-								</div>
-							</div>
-							{invoice.address && (
-								<div className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50">
-									<div className="h-8 w-8 rounded-full bg-stone-200 dark:bg-stone-700 flex items-center justify-center text-stone-500">
-										<MapPin className="h-4 w-4" />
-									</div>
-									<p className="text-sm text-stone-600 dark:text-stone-300">
-										{invoice.address} {invoice.city ? ` - ${invoice.city}` : ""}
-									</p>
-								</div>
-							)}
-							{invoice.phone && (
-								<div className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50">
-									<div className="h-8 w-8 rounded-full bg-stone-200 dark:bg-stone-700 flex items-center justify-center text-stone-500">
-										<Phone className="h-4 w-4" />
-									</div>
-									<p className="text-sm text-stone-600 dark:text-stone-300">
-										{invoice.phone}
-									</p>
-								</div>
-							)}
-						</div>
-					</div>
-
-					{/* Additional Info */}
-					{(invoice.salesperson || invoice.movementType || invoice.notes) && (
-						<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
-							<h2 className="mb-4 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-								<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs text-emerald-600 dark:bg-emerald-900/30">
-									<div className="text-[10px] font-bold">INFO</div>
-								</div>
-								Datos Adicionales
-							</h2>
-							<div className="space-y-4">
-								<div className="grid grid-cols-2 gap-4">
-									{invoice.salesperson && (
-										<div>
-											<label className="text-xs text-stone-400 block uppercase font-medium">Vendedor</label>
-											<p className="text-sm font-semibold">{invoice.salesperson}</p>
-										</div>
-									)}
-									{invoice.movementType && (
-										<div>
-											<label className="text-xs text-stone-400 block uppercase font-medium">Movimiento</label>
-											<p className="text-sm font-semibold">{invoice.movementType}</p>
-										</div>
-									)}
-								</div>
-								{invoice.notes && (
+				{/* Content */}
+				<div className="bg-[var(--card)] rounded-3xl shadow-sm border border-[var(--border)] overflow-hidden">
+					{activeTab === "info" ? (
+						<div className="p-8 space-y-8">
+							{/* Info Content */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+								<div className="space-y-6">
 									<div>
-										<label className="text-xs text-stone-400 block uppercase font-medium">Observaciones</label>
-										<p className="text-sm text-stone-600 bg-stone-50 p-2 rounded-lg italic dark:bg-stone-800 dark:text-stone-300">
-											"{invoice.notes}"
-										</p>
+										<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Datos del Cliente</h3>
+										<div className="p-4 rounded-2xl bg-[var(--secondary-card)] space-y-2">
+											<p className="font-bold text-lg text-[var(--card-foreground)]">{invoice.customerName || "Consumidor Final"}</p>
+											<div className="space-y-1 text-sm text-stone-500">
+												{invoice.customerTaxId && <p>CUIT: {invoice.customerTaxId}</p>}
+												<p>{invoice.address || "Dirección no especificada"}</p>
+												{invoice.phone && <p>Tel: {invoice.phone}</p>}
+												{invoice.email && <p>{invoice.email}</p>}
+												<p>{invoice.city}</p>
+											</div>
+										</div>
+									</div>
+									<div>
+										<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Detalles del Documento</h3>
+										<div className="grid grid-cols-2 gap-4">
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
+												<label className="text-xs text-stone-400 block">Fecha</label>
+												<p className="font-bold text-[var(--card-foreground)]">{formatDate(invoice.date)}</p>
+											</div>
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
+												<label className="text-xs text-stone-400 block">Punto de Venta</label>
+												<p className="font-bold text-[var(--card-foreground)]">{invoice.salePoint?.toString().padStart(3, "0") || "-"}</p>
+											</div>
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
+												<label className="text-xs text-stone-400 block">Vendedor</label>
+												<p className="font-bold text-[var(--card-foreground)]">{invoice.salesperson || "Admin"}</p>
+											</div>
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
+												<label className="text-xs text-stone-400 block">Movimiento</label>
+												<p className="font-bold text-[var(--card-foreground)]">{invoice.movementType || "-"}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div>
+									<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Items de la Factura</h3>
+									<div className="border border-[var(--border)] rounded-2xl overflow-hidden overflow-x-auto">
+										<table className="w-full text-sm min-w-[600px]">
+											<thead className="bg-[var(--muted)] border-b border-[var(--border)]">
+												<tr>
+													<th className="py-3 px-4 text-left font-bold text-stone-500">Descripción</th>
+													<th className="py-3 px-4 text-center font-bold text-stone-500 w-16">Cant.</th>
+													<th className="py-3 px-4 text-right font-bold text-stone-500">Precio</th>
+													<th className="py-3 px-4 text-right font-bold text-stone-500">Total</th>
+												</tr>
+											</thead>
+											<tbody className="divide-y divide-[var(--border)]">
+												{invoice.items?.map((item: any, i: number) => (
+													<tr key={i} className="hover:bg-[var(--muted)]/50">
+														<td className="py-3 px-4">
+															<span className="text-[var(--card-foreground)]">{item.description}</span>
+															{item.code && <span className="ml-2 text-xs text-stone-400">({item.code})</span>}
+														</td>
+														<td className="py-3 px-4 text-center font-bold text-[var(--card-foreground)]">{item.quantity}</td>
+														<td className="py-3 px-4 text-right text-stone-500">
+															{formatCurrency(parseFloat(item.price || item.unitPrice))}
+														</td>
+														<td className="py-3 px-4 text-right font-bold text-[var(--card-foreground)]">
+															{formatCurrency(parseFloat(item.amount))}
+														</td>
+													</tr>
+												))}
+											</tbody>
+											<tfoot className="bg-[var(--muted)]/30 border-t border-[var(--border)]">
+												<tr>
+													<td colSpan={3} className="py-3 px-4 text-right font-bold text-stone-500">TOTAL</td>
+													<td className="py-3 px-4 text-right font-bold text-lg text-amber-600">
+														{formatCurrency(invoice.total)}
+													</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+									{invoice.notes && (
+										<div className="mt-6">
+											<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Observaciones</h3>
+											<p className="text-sm text-[var(--card-foreground)] italic bg-[var(--secondary-card)] p-4 rounded-2xl">
+												{invoice.notes}
+											</p>
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+					) : (
+						<div className="h-full flex flex-col min-h-[800px]">
+							<div className="flex-1 bg-[var(--muted)] border-b border-[var(--border)] relative h-full flex flex-col">
+								<div className="p-4 bg-[var(--card)] border-b border-[var(--border)] flex justify-end">
+									<button
+										onClick={handleDownload}
+										className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white font-bold hover:bg-amber-700 transition-colors shadow-lg shadow-amber-600/20"
+									>
+										<Download className="h-4 w-4" />
+										Descargar PDF
+									</button>
+								</div>
+								{pdfUrl ? (
+									<iframe src={pdfUrl} className="w-full h-full min-h-[800px] border-none flex-1" />
+								) : (
+									<div className="flex flex-col items-center justify-center h-full text-stone-400 gap-4 min-h-[400px]">
+										<FileText className="h-16 w-16 opacity-20" />
+										<p>Generando vista previa...</p>
 									</div>
 								)}
 							</div>
 						</div>
 					)}
 				</div>
-
-				{/* Items & Actions Column */}
-				<div className="space-y-6">
-					{/* Items List */}
-					<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 flex flex-col h-full">
-						<h2 className="mb-4 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-xs text-purple-600 dark:bg-purple-900/30">
-								<div className="text-[10px] font-bold">LIST</div>
-							</div>
-							Items del Presupuesto
-						</h2>
-
-						<div className="flex-1 overflow-auto max-h-[500px] mb-6">
-							<table className="w-full text-left">
-								<thead className="sticky top-0 bg-[var(--card)] z-10">
-									<tr className="border-b border-stone-100 dark:border-stone-800 text-[10px] uppercase text-stone-400 font-bold">
-										<th className="py-2 pl-2">Cant.</th>
-										<th className="py-2 px-2">Descripción</th>
-										<th className="py-2 px-2 text-right">Precio</th>
-										<th className="py-2 pr-2 text-right">Total</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-stone-50 dark:divide-stone-900">
-									{invoice.items?.map((item: any, idx: number) => (
-										<tr key={idx}>
-											<td className="py-3 pl-2 text-sm font-medium">{item.quantity}</td>
-											<td className="py-3 px-2 text-sm text-stone-600 dark:text-stone-300">
-												{item.description}
-												{item.code && <span className="block text-[10px] text-stone-400">Cód: {item.code}</span>}
-											</td>
-											<td className="py-3 px-2 text-sm text-right text-stone-500">
-												${parseFloat(item.price || item.unitPrice).toLocaleString("es-AR")}
-											</td>
-											<td className="py-3 pr-2 text-sm text-right font-bold text-stone-700 dark:text-stone-200">
-												${parseFloat(item.amount).toLocaleString("es-AR")}
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-
-						{/* Actions */}
-						<div className="pt-6 border-t border-stone-100 dark:border-stone-800 mt-auto">
-							<button
-								onClick={() => {
-									const pdfData: InvoiceData = {
-										budgetNumber: invoice.budgetNumber || "00000000",
-										date: new Date(invoice.date).toLocaleDateString("es-AR"), // Or use helper if available in scope
-										salePoint: invoice.salePoint?.toString().padStart(3, "0") || "001",
-										customer: invoice.customerName || invoice.customer || "",
-										address: invoice.address || "",
-										city: invoice.city || "",
-										phone: invoice.phone || "",
-										movementType: invoice.movementType || "",
-										salesperson: invoice.salesperson || "Administración",
-										notes: invoice.notes || "",
-										items: invoice.items || [],
-									};
-									generateInvoicePDF(pdfData);
-								}}
-								className="cursor-pointer w-full flex items-center justify-center gap-2 rounded-xl bg-amber-600 py-4 text-sm font-bold text-white transition-all hover:bg-amber-700 shadow-lg shadow-amber-600/20 active:scale-95"
-							>
-								<Download className="h-5 w-5" />
-								Descargar PDF
-							</button>
-						</div>
-					</div>
-				</div>
 			</div>
-		</div>
+		</div >
 	);
 }

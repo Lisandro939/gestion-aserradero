@@ -6,10 +6,12 @@ import { desc, eq } from "drizzle-orm";
 // GET - Get all invoices
 export async function GET() {
 	try {
-		const result = await db
-			.select()
-			.from(invoices)
-			.orderBy(desc(invoices.createdAt));
+		const result = await db.query.invoices.findMany({
+			with: {
+				items: true,
+			},
+			orderBy: (invoices, { desc }) => [desc(invoices.createdAt)],
+		});
 
 		// Convert cents to pesos
 		const invoicesWithPesos = result.map((invoice) => ({
@@ -29,6 +31,16 @@ export async function GET() {
 			mov: invoice.movementType,
 			vendedor: invoice.salesperson,
 			observaciones: invoice.notes,
+			items: invoice.items.map((item) => ({
+				...item,
+				unitPrice: item.unitPrice / 100,
+				amount: item.amount / 100,
+				// Ensure strings for PDF
+				quantity: item.quantity.toString(),
+				description: item.description,
+				code: item.code || "",
+				discount: item.discount || "",
+			})),
 		}));
 
 		return NextResponse.json(invoicesWithPesos);

@@ -9,6 +9,7 @@
 	--background: #fafaf9;
 	--foreground: #1c1917;
 	--card: #ffffff;
+        --secondary-card: #f5f5f4;
 	--card-foreground: #1c1917;
 	--border: #e7e5e4;
 }
@@ -17,6 +18,7 @@
 	--background: #0c0a09;
 	--foreground: #f5f5f4;
 	--card: #141413;
+        --secondary-card: #292524;
 	--card-foreground: #f5f5f4;
 	--border: #292524;
 }

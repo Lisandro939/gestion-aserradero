@@ -158,7 +158,7 @@ export default function GenerateDeliveryNoteTab() {
 			}
 
 			// Generate PDF
-			generateDeliveryNotePDF(formData);
+			await generateDeliveryNotePDF(formData);
 
 			// Show success modal
 			setShowSuccessModal(true);
@@ -413,7 +413,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="address"
 									value={formData.address}
 									readOnly
-									className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:bg-stone-900/50 dark:border-stone-800 text-stone-500"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
 								/>
 							</div>
 							<div>
@@ -426,7 +426,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="taxId"
 									value={formData.taxId}
 									readOnly
-									className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:bg-stone-900/50 dark:border-stone-800 text-stone-500"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
 								/>
 							</div>
 						</div>
@@ -545,7 +545,7 @@ export default function GenerateDeliveryNoteTab() {
 				</div>
 				<button
 					onClick={addItem}
-					className="cursor-pointer mt-4 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-2 text-sm font-bold text-stone-600 transition-all hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+					className="cursor-pointer mt-4 flex items-center gap-2 rounded-lg bg-[var(--secondary-card)] px-4 py-2 text-sm font-bold text-[var(--card-foreground)] transition-all"
 				>
 					<Plus className="h-4 w-4" />
 					Agregar Item

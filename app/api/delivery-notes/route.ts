@@ -5,6 +5,19 @@ import { eq, like, or, and, desc, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
+function parseDate(dateStr: string | undefined | null): Date {
+	if (!dateStr) return new Date();
+
+	// Check for DD/MM/YYYY format
+	const dmy = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+	if (dmy) {
+		return new Date(parseInt(dmy[3]), parseInt(dmy[2]) - 1, parseInt(dmy[1]));
+	}
+
+	const d = new Date(dateStr);
+	return isNaN(d.getTime()) ? new Date() : d;
+}
+
 // GET - List delivery notes without pagination or filters
 export async function GET(request: NextRequest) {
 	try {
@@ -69,7 +82,7 @@ export async function POST(request: NextRequest) {
 					customerId,
 					number: documentNumber,
 					salePoint: body.salePoint || 1,
-					date: date ? new Date(date) : new Date(),
+					date: parseDate(date),
 					status: status || "pending",
 					notes,
 					total: 0, // Will update later

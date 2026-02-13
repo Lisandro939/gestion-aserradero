@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
 	UserPlus,
 	Search,
@@ -46,6 +47,7 @@ interface Transaction {
 }
 
 export default function CustomersPage() {
+	const router = useRouter();
 	const [mounted, setMounted] = useState(false);
 	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -139,9 +141,7 @@ export default function CustomersPage() {
 	};
 
 	const handleViewCustomer = (customer: Customer) => {
-		setSelectedCustomer(customer);
-		setShowModal("view");
-		fetchTransactions(customer.id);
+		router.push(`/customers/${customer.id}`);
 	};
 
 	// Delete Customer Logic
@@ -393,20 +393,21 @@ export default function CustomersPage() {
 
 			{/* Clientes Table */}
 			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 overflow-hidden">
-				<div className="overflow-x-auto -mx-3 md:mx-0">
+				{/* Desktop Table */}
+				<div className="hidden md:block overflow-x-auto -mx-3 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
 							<tr className="border-b border-stone-100 dark:border-stone-800">
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">
 									Cliente
 								</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">
 									Contacto
 								</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">
 									CUIT
 								</th>
-								<th className="pb-4 text-center text-xs font-bold text-stone-400 uppercase">
+								<th className="pb-4 text-center text-xs font-bold text-[var(--card-foreground)] uppercase">
 									Acciones
 								</th>
 							</tr>
@@ -418,7 +419,7 @@ export default function CustomersPage() {
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ delay: index * 0.05 }}
-									className="border-b border-stone-50 hover:bg-white dark:border-stone-900 dark:hover:bg-stone-900/50 transition-colors"
+									className="border-b border-stone-50 dark:border-stone-900 transition-colors"
 								>
 									<td className="py-4">
 										<div className="flex items-center gap-3">
@@ -429,7 +430,7 @@ export default function CustomersPage() {
 												<p className="text-sm font-bold text-[var(--card-foreground)]">
 													{customer.name}
 												</p>
-												<p className="text-xs text-stone-500">
+												<p className="text-xs text-[var(--card-foreground)]">
 													Cliente desde {formatDate(customer.registrationDate)}
 												</p>
 											</div>
@@ -437,18 +438,18 @@ export default function CustomersPage() {
 									</td>
 									<td className="py-4">
 										<div className="flex flex-col gap-1">
-											<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+											<div className="flex items-center gap-2 text-xs text-[var(--card-foreground)]">
 												<Mail className="h-3 w-3" />
 												{customer.email}
 											</div>
-											<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+											<div className="flex items-center gap-2 text-xs text-[var(--card-foreground)]">
 												<Phone className="h-3 w-3" />
 												{customer.phone}
 											</div>
 										</div>
 									</td>
 									<td className="py-4">
-										<span className="text-sm font-mono text-stone-600 dark:text-stone-400">
+										<span className="text-sm font-mono text-[var(--card-foreground)]">
 											{customer.cuit}
 										</span>
 									</td>
@@ -456,7 +457,7 @@ export default function CustomersPage() {
 										<div className="flex items-center justify-center gap-2">
 											<button
 												onClick={() => handleViewCustomer(customer)}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-blue-100 hover:text-blue-600 transition-all dark:hover:bg-blue-900/30"
+												className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-blue-100 hover:text-blue-600 transition-all dark:hover:bg-blue-900/30"
 												title="Ver detalles"
 											>
 												<Eye className="h-4 w-4" />
@@ -466,7 +467,7 @@ export default function CustomersPage() {
 													setSelectedCustomer(customer);
 													setShowModal("edit");
 												}}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-100 hover:text-amber-600 transition-all dark:hover:bg-amber-900/30"
+												className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-amber-100 hover:text-amber-600 transition-all dark:hover:bg-amber-900/30"
 												title="Editar"
 											>
 												<Edit className="h-4 w-4" />
@@ -474,7 +475,7 @@ export default function CustomersPage() {
 											{customer.status === "inactive" ? (
 												<button
 													onClick={() => handleRestoreClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/30"
+													className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/30"
 													title="Restaurar"
 												>
 													<RotateCcw className="h-4 w-4" />
@@ -482,7 +483,7 @@ export default function CustomersPage() {
 											) : (
 												<button
 													onClick={() => handleDeleteClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/30"
+													className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/30"
 													title="Eliminar"
 												>
 													<Trash2 className="h-4 w-4" />
@@ -494,6 +495,77 @@ export default function CustomersPage() {
 							))}
 						</tbody>
 					</table>
+				</div>
+
+				{/* Mobile Cards */}
+				<div className="md:hidden space-y-4">
+					{filteredCustomers.map((customer, index) => (
+						<motion.div
+							key={customer.id}
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: index * 0.05 }}
+							className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 dark:border-stone-800 shadow-sm space-y-4"
+						>
+							<div className="flex items-center gap-3 border-b border-stone-100 dark:border-stone-800 pb-3">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm dark:bg-amber-900/30">
+									{customer.name.charAt(0)}
+								</div>
+								<div className="min-w-0 flex-1">
+									<p className="text-sm font-bold text-[var(--card-foreground)] truncate">
+										{customer.name}
+									</p>
+									<p className="text-xs text-stone-500 truncate">
+										CUIT: {customer.cuit}
+									</p>
+								</div>
+							</div>
+
+							<div className="space-y-2">
+								<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+									<Mail className="h-3.5 w-3.5 shrink-0" />
+									<span className="truncate">{customer.email}</span>
+								</div>
+								<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+									<Phone className="h-3.5 w-3.5 shrink-0" />
+									<span className="truncate">{customer.phone}</span>
+								</div>
+							</div>
+
+							<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
+								<button
+									onClick={() => handleViewCustomer(customer)}
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-medium hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:text-blue-400"
+								>
+									<Eye className="h-3 w-3" /> Ver
+								</button>
+								<button
+									onClick={() => {
+										setSelectedCustomer(customer);
+										setShowModal("edit");
+									}}
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors dark:bg-amber-900/20 dark:text-amber-400"
+								>
+									<Edit className="h-3 w-3" /> Editar
+								</button>
+								{customer.status === "inactive" ? (
+									<button
+										onClick={() => handleRestoreClick(customer.id)}
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition-colors dark:bg-emerald-900/20 dark:text-emerald-400"
+									>
+										<RotateCcw className="h-3 w-3" /> Restaurar
+									</button>
+								) : (
+									<button
+										onClick={() => handleDeleteClick(customer.id)}
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors dark:bg-red-900/20 dark:text-red-400"
+									>
+										<Trash2 className="h-3 w-3" /> Eliminar
+									</button>
+								)}
+							</div>
+						</motion.div>
+					))}
 				</div>
 
 				{filteredCustomers.length === 0 && (

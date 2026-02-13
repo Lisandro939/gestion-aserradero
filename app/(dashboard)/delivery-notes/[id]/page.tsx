@@ -50,8 +50,9 @@ export default function DeliveryNoteDetailPage() {
 					saleCondition: "currentAccount", // Default
 					vatCondition: "registeredResp", // Default
 				};
-				const doc = getDeliveryNoteDoc(pdfData);
-				const url = doc.output("datauristring");
+				const doc = await getDeliveryNoteDoc(pdfData);
+				const blob = doc.output("blob");
+				const url = URL.createObjectURL(blob);
 				setPdfUrl(url);
 			} else {
 				// Handle not found
@@ -78,7 +79,7 @@ export default function DeliveryNoteDetailPage() {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center h-screen bg-stone-50 dark:bg-stone-950">
+			<div className="flex items-center justify-center h-screen bg-[var(--background)]">
 				<Loader2 className="h-8 w-8 animate-spin text-amber-600" />
 			</div>
 		);
@@ -86,7 +87,7 @@ export default function DeliveryNoteDetailPage() {
 
 	if (!note) {
 		return (
-			<div className="flex flex-col items-center justify-center h-screen gap-4 bg-stone-50 dark:bg-stone-950">
+			<div className="flex flex-col items-center justify-center h-screen gap-4 bg-[var(--background)]">
 				<p className="text-stone-500">Remito no encontrado</p>
 				<button onClick={handleBack} className="text-amber-600 font-bold hover:underline">
 					Volver a la lista
@@ -96,18 +97,18 @@ export default function DeliveryNoteDetailPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-stone-50 dark:bg-stone-950">
+		<div className="min-h-screen bg-[var(--background)]">
 			<div className="mx-auto space-y-6">
 				{/* Header */}
 				<div className="flex items-center gap-4">
 					<button
 						onClick={handleBack}
-						className="cursor-pointer p-2 rounded-xl bg-white border border-stone-200 text-stone-500 hover:bg-stone-50 transition-colors shadow-sm dark:bg-stone-900 dark:border-stone-800"
+						className="cursor-pointer p-2 rounded-xl bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--secondary-card)] transition-colors shadow-sm"
 					>
 						<ArrowLeft className="h-5 w-5" />
 					</button>
 					<div>
-						<h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">
+						<h1 className="text-2xl font-bold text-[var(--card-foreground)]">
 							Remito N° {note.number}
 						</h1>
 						<p className="text-stone-500 text-sm">
@@ -117,14 +118,14 @@ export default function DeliveryNoteDetailPage() {
 				</div>
 
 				{/* Tabs */}
-				<div className="flex p-1 bg-stone-200/50 dark:bg-stone-900/50 rounded-xl w-fit">
+				<div className="flex p-1 bg-[var(--muted)] rounded-xl w-fit">
 					<button
 						onClick={() => setActiveTab("info")}
 						className={cn(
 							"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all",
 							activeTab === "info"
-								? "bg-white text-amber-600 shadow-sm dark:bg-stone-800"
-								: "text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
+								? "bg-[var(--card)] text-amber-600 shadow-sm"
+								: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 						)}
 					>
 						Información
@@ -134,8 +135,8 @@ export default function DeliveryNoteDetailPage() {
 						className={cn(
 							"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all",
 							activeTab === "pdf"
-								? "bg-white text-amber-600 shadow-sm dark:bg-stone-800"
-								: "text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
+								? "bg-[var(--card)] text-amber-600 shadow-sm"
+								: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 						)}
 					>
 						Visualizar PDF
@@ -143,7 +144,7 @@ export default function DeliveryNoteDetailPage() {
 				</div>
 
 				{/* Content */}
-				<div className="bg-white dark:bg-stone-900 rounded-3xl shadow-sm border border-stone-200 dark:border-stone-800 overflow-hidden">
+				<div className="bg-[var(--card)] rounded-3xl shadow-sm border border-[var(--border)] overflow-hidden">
 					{activeTab === "info" ? (
 						<div className="p-8 space-y-8">
 							{/* Info Content */}
@@ -151,7 +152,7 @@ export default function DeliveryNoteDetailPage() {
 								<div className="space-y-6">
 									<div>
 										<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Datos del Cliente</h3>
-										<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50 space-y-2">
+										<div className="p-4 rounded-2xl bg-[var(--secondary-card)] space-y-2">
 											<p className="font-bold text-lg">{note.customerName || "Consumidor Final"}</p>
 											<div className="space-y-1 text-sm text-stone-500">
 												<p>CUIT: {note.customerTaxId || "-"}</p>
@@ -163,11 +164,11 @@ export default function DeliveryNoteDetailPage() {
 									<div>
 										<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Detalles del Documento</h3>
 										<div className="grid grid-cols-2 gap-4">
-											<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50">
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
 												<label className="text-xs text-stone-400 block">Fecha</label>
 												<p className="font-bold">{formatDate(note.date)}</p>
 											</div>
-											<div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/50">
+											<div className="p-4 rounded-2xl bg-[var(--secondary-card)]">
 												<label className="text-xs text-stone-400 block">Punto de Venta</label>
 												<p className="font-bold">{note.salePoint?.toString().padStart(3, "0") || "-"}</p>
 											</div>
@@ -177,19 +178,19 @@ export default function DeliveryNoteDetailPage() {
 
 								<div>
 									<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Items del Remito</h3>
-									<div className="border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden">
+									<div className="border border-[var(--border)] rounded-2xl overflow-hidden">
 										<table className="w-full text-sm">
-											<thead className="bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-800">
+											<thead className="bg-[var(--muted)] border-b border-[var(--border)]">
 												<tr>
 													<th className="py-3 px-4 text-left font-bold text-stone-500">Descripción</th>
 													<th className="py-3 px-4 text-center font-bold text-stone-500 w-24">Cant.</th>
 												</tr>
 											</thead>
-											<tbody className="divide-y divide-stone-100 dark:divide-stone-800">
+											<tbody className="divide-y divide-[var(--border)]">
 												{note.items?.map((item: any, i: number) => (
-													<tr key={i} className="hover:bg-stone-50/50 dark:hover:bg-stone-800/50">
+													<tr key={i} className="hover:bg-[var(--muted)]/50">
 														<td className="py-3 px-4">{item.detail || item.description}</td>
-														<td className="py-3 px-4 text-center font-bold text-stone-600 dark:text-stone-300">{item.quantity}</td>
+														<td className="py-3 px-4 text-center font-bold text-[var(--card-foreground)]">{item.quantity}</td>
 													</tr>
 												))}
 											</tbody>
@@ -198,7 +199,7 @@ export default function DeliveryNoteDetailPage() {
 									{note.notes && (
 										<div className="mt-6">
 											<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Observaciones</h3>
-											<p className="text-sm text-stone-600 dark:text-stone-400 italic bg-stone-50 dark:bg-stone-800/50 p-4 rounded-2xl">
+											<p className="text-sm text-[var(--card-foreground)] italic bg-[var(--secondary-card)] p-4 rounded-2xl">
 												{note.notes}
 											</p>
 										</div>
@@ -208,8 +209,8 @@ export default function DeliveryNoteDetailPage() {
 						</div>
 					) : (
 						<div className="h-full flex flex-col min-h-[800px]">
-							<div className="flex-1 bg-stone-100 dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 relative h-full flex flex-col">
-								<div className="p-4 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 flex justify-end">
+							<div className="flex-1 bg-[var(--muted)] border-b border-[var(--border)] relative h-full flex flex-col">
+								<div className="p-4 bg-[var(--card)] border-b border-[var(--border)] flex justify-end">
 									<button
 										onClick={() => {
 											const pdfData: any = {

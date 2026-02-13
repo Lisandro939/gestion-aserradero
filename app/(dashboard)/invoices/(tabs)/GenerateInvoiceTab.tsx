@@ -158,7 +158,14 @@ export default function GenerateInvoiceTab() {
 			if (field === "quantity" || field === "price" || field === "discount") {
 				const quantity = parseFloat(newItems[index].quantity) || 0;
 				const price = parseFloat(newItems[index].price) || 0;
-				const discount = parseFloat(newItems[index].discount) || 0;
+				let discount = parseFloat(newItems[index].discount) || 0;
+
+				// Limit discount to 100%
+				if (discount > 100) {
+					discount = 100;
+					newItems[index].discount = "100";
+				}
+
 				const subtotal = quantity * price;
 				const discountAmount = subtotal * (discount / 100);
 				newItems[index].amount = (subtotal - discountAmount).toFixed(2);
@@ -372,7 +379,7 @@ export default function GenerateInvoiceTab() {
 									value={formData.address}
 									readOnly
 									placeholder="Dirección completa"
-									className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:bg-stone-900/50 dark:border-stone-800 text-stone-500"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
 								/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
@@ -398,7 +405,7 @@ export default function GenerateInvoiceTab() {
 										name="phone"
 										value={formData.phone}
 										readOnly
-										className="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:bg-stone-900/50 dark:border-stone-800 text-stone-500"
+										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
 									/>
 								</div>
 							</div>
@@ -480,7 +487,7 @@ export default function GenerateInvoiceTab() {
 								<th className="py-3 px-4 md:w-[5vw] text-center">Cód.</th>
 								<th className="py-3 px-4 md:w-[10vw] text-center">Precio</th>
 								<th className="py-3 px-4 w-[5vw] text-center">Desc%</th>
-								<th className="py-3 px-4">Importe</th>
+								<th className="py-3 px-4 w-[15vw] text-center">Importe</th>
 								<th className="py-3 pr-4 w-12 text-center">Acción</th>
 							</tr>
 						</thead>
@@ -569,10 +576,10 @@ export default function GenerateInvoiceTab() {
 												)
 											}
 											placeholder="0"
-											className="w-full rounded-xl border border-transparent bg-[var(--card)] py-2 text-center text-sm focus:border-amber-500"
+											className="w-full rounded-xl border border-transparent bg-[var(--card)] py-2 text-[var(--card-foreground)] text-center text-sm focus:border-amber-500"
 										/>
 									</td>
-									<td className="py-2 px-4 text-right font-medium text-stone-700 dark:text-stone-300">
+									<td className="py-2 px-4 text-right font-medium text-[var(--card-foreground)]">
 										${item.amount || "0.00"}
 									</td>
 									<td className="py-2 pr-4 text-center">
@@ -592,7 +599,7 @@ export default function GenerateInvoiceTab() {
 								<td colSpan={5} className="py-4 text-right font-bold text-lg uppercase text-stone-500">
 									Total
 								</td>
-								<td className="py-4 text-right font-bold text-xl text-stone-800 dark:text-stone-100">
+								<td className="py-4 text-right font-bold text-xl text-[var(--card-foreground)]">
 									$
 									{calculateTotal().toLocaleString("es-AR", {
 										minimumFractionDigits: 2,

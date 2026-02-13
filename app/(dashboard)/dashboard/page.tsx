@@ -39,15 +39,15 @@ export default function DashboardPage() {
 		try {
 			setLoading(true);
 			// Cargar clientes
-			const clientesRes = await fetch("/api/clientes");
+			const clientesRes = await fetch("/api/customers");
 			const clientes = clientesRes.ok ? await clientesRes.json() : [];
 
 			// Cargar remitos
-			const remitosRes = await fetch("/api/remitos");
+			const remitosRes = await fetch("/api/delivery-notes");
 			const remitos = remitosRes.ok ? await remitosRes.json() : [];
 
 			// Cargar facturas
-			const facturasRes = await fetch("/api/facturas");
+			const facturasRes = await fetch("/api/invoices");
 			const facturas = facturasRes.ok ? await facturasRes.json() : [];
 
 			// Calcular estadísticas
@@ -55,7 +55,7 @@ export default function DashboardPage() {
 				totalClientes: clientes.length,
 				clientesActivos: clientes.filter((c: any) => c.estado === "activo")
 					.length,
-				totalRemitos: remitos.length,
+				totalRemitos: remitos.data.length,
 				totalFacturas: facturas.length,
 			};
 
@@ -88,14 +88,16 @@ export default function DashboardPage() {
 			icon: Users,
 			color: "text-blue-500",
 			bg: "bg-blue-500/10",
+			href: "/customers",
 		},
 		{
 			name: "Remitos Generados",
-			value: stats.totalRemitos.toString(),
+			value: stats?.totalRemitos?.toString(),
 			subtitle: "Total registrados",
 			icon: FileText,
 			color: "text-amber-500",
 			bg: "bg-amber-500/10",
+			href: "/delivery-notes",
 		},
 		{
 			name: "Facturas Emitidas",
@@ -104,6 +106,7 @@ export default function DashboardPage() {
 			icon: DollarSign,
 			color: "text-emerald-500",
 			bg: "bg-emerald-500/10",
+			href: "/invoices",
 		},
 	];
 
@@ -122,11 +125,12 @@ export default function DashboardPage() {
 			{/* Stats Grid */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
 				{dashboardStats.map((stat, i) => (
-					<motion.div
+					<motion.a
 						key={stat.name}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: i * 0.1 }}
+						href={stat.href}
 						className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 group hover:border-amber-500/50 transition-all cursor-pointer"
 					>
 						<div className="mb-3 md:mb-4 flex items-center justify-between">
@@ -146,7 +150,7 @@ export default function DashboardPage() {
 						<p className="mt-1 text-[10px] md:text-xs text-stone-400 font-medium">
 							{stat.subtitle}
 						</p>
-					</motion.div>
+					</motion.a>
 				))}
 			</div>
 

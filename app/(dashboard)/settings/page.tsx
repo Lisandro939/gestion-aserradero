@@ -57,6 +57,8 @@ export default function SettingsPage() {
 	const [showResetModal, setShowResetModal] = useState(false);
 	const [resetUser, setResetUser] = useState<{ email: string; tempPass: string } | null>(null);
 
+	const [showSuccessModal, setShowSuccessModal] = useState(false);
+
 	const handleAddUser = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
@@ -67,7 +69,6 @@ export default function SettingsPage() {
 				role: newRole,
 				password: newPass,
 			});
-			setSuccessMsg("Usuario creado con éxito.");
 			setSuccessMsg("Usuario creado con éxito.");
 			loadUsers();
 			// Reset form
@@ -93,13 +94,9 @@ export default function SettingsPage() {
 		setIsLoading(true);
 		try {
 			await AuthService.resetPassword(resetUser.email, resetUser.tempPass);
-			// Success feedback - could be another modal or toast, but alert is consistent with previous behavior for success
-			// OR we can just show success message in the page
-			alert(
-				`Contraseña reseteada exitosamente. El usuario ${resetUser.email} deberá ingresar con: ${resetUser.tempPass}`
-			);
 			setShowResetModal(false);
-			setResetUser(null);
+			setShowSuccessModal(true);
+			// setResetUser(null); // Keep user data for success modal
 		} catch (error) {
 			console.error(error);
 			alert("Error al resetear contraseña");
@@ -153,8 +150,8 @@ export default function SettingsPage() {
 							</div>
 						</div>
 						<div className="mt-8 border-t border-stone-100 pt-6 dark:border-stone-800">
-							<button className="w-full rounded-xl border border-stone-200 py-3 text-sm font-bold text-stone-600 transition-all dark:border-stone-800 dark:text-stone-400 text-center hover:bg-[var(--card-foreground)]">
-								Editar Información
+							<button className="cursor-pointer w-full rounded-xl border border-stone-200 py-3 text-sm font-bold text-[var(--foreground)] transition-all text-center hover:bg-[var(--secondary-card)]">
+								Editar información
 							</button>
 						</div>
 					</section>
@@ -309,7 +306,7 @@ export default function SettingsPage() {
 											disabled={
 												isLoading
 											}
-											className="cursor-pointer ml-auto flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-2.5 text-sm font-bold text-white hover:bg-stone-300 dark:bg-white dark:text-stone-900"
+											className="cursor-pointer ml-auto flex items-center gap-2 rounded-xl bg-[var(--foreground)] px-6 py-2.5 text-sm font-bold text-white"
 										>
 											{isLoading ? (
 												<Loader2 className="h-4 w-4 animate-spin" />
@@ -363,7 +360,7 @@ export default function SettingsPage() {
 													</p>
 												</div>
 											</div>
-											<div className="flex items-center gap-4">
+											<div className="flex items-center gap-0">
 												<span
 													className={cn(
 														"px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
@@ -400,14 +397,14 @@ export default function SettingsPage() {
 			{/* Reset Password Modal */}
 			{showResetModal && resetUser && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-					<div className="w-full max-w-md bg-white dark:bg-stone-900 rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200">
+					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-stone-200 dark:border-stone-800">
 						<div className="flex items-center justify-between mb-6">
 							<div className="flex items-center gap-3">
 								<div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 dark:bg-amber-900/30">
 									<KeyRound className="h-5 w-5" />
 								</div>
-								<h3 className="text-xl font-bold text-stone-900 dark:text-white">
-									Resetear Contraseña
+								<h3 className="text-xl font-bold text-[var(--card-foreground)]">
+									Resetear contraseña
 								</h3>
 							</div>
 							<button
@@ -419,9 +416,9 @@ export default function SettingsPage() {
 						</div>
 
 						<div className="space-y-4 mb-8">
-							<p className="text-stone-600 dark:text-stone-300">
+							<p className="text-[var(--card-foreground)]">
 								¿Estás seguro de resetear la contraseña de{" "}
-								<span className="font-bold text-stone-900 dark:text-white">
+								<span className="font-bold text-[var(--foreground)]">
 									{resetUser.email}
 								</span>
 								?
@@ -443,7 +440,7 @@ export default function SettingsPage() {
 						<div className="flex gap-3">
 							<button
 								onClick={() => setShowResetModal(false)}
-								className="flex-1 px-4 py-2.5 rounded-xl font-bold text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 transition-colors"
+								className="flex-1 px-4 py-2.5 rounded-xl font-bold text-stone-500 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800 transition-colors"
 							>
 								Cancelar
 							</button>
@@ -455,8 +452,54 @@ export default function SettingsPage() {
 								{isLoading ? (
 									<Loader2 className="h-4 w-4 animate-spin" />
 								) : (
-									"Confirmar Reset"
+									"Confirmar reseteo"
 								)}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Success Modal */}
+			{showSuccessModal && resetUser && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-stone-200 dark:border-stone-800">
+						<div className="flex flex-col items-center text-center space-y-4">
+							<div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 dark:bg-emerald-900/30">
+								<CheckCircle2 className="h-8 w-8" />
+							</div>
+
+							<div>
+								<h3 className="text-xl font-bold text-[var(--card-foreground)] mb-2">
+									Contraseña Reseteada
+								</h3>
+								<p className="text-stone-500">
+									La contraseña se ha actualizado correctamente.
+								</p>
+							</div>
+
+							<div className="w-full bg-stone-50 border border-stone-100 rounded-xl p-4 dark:bg-stone-900/50 dark:border-stone-800">
+								<p className="text-xs font-bold text-stone-400 uppercase mb-2">
+									Credenciales para {resetUser.email}
+								</p>
+								<div className="flex items-center justify-center gap-2 bg-white dark:bg-stone-800 rounded-lg p-3 border border-stone-200 dark:border-stone-700">
+									<code className="text-lg font-mono font-bold text-amber-600 dark:text-amber-400 select-all">
+										{resetUser.tempPass}
+									</code>
+								</div>
+								<p className="text-xs text-stone-400 mt-2">
+									Comparte esta contraseña con el usuario.
+								</p>
+							</div>
+
+							<button
+								onClick={() => {
+									setShowSuccessModal(false);
+									setResetUser(null);
+								}}
+								className="w-full px-4 py-3 rounded-xl font-bold text-white bg-amber-600 hover:bg-amber-700 transition-colors shadow-lg shadow-amber-600/20"
+							>
+								Entendido
 							</button>
 						</div>
 					</div>

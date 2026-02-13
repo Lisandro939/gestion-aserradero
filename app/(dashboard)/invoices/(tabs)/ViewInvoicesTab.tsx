@@ -106,7 +106,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 						placeholder="Buscar por número, cliente o localidad..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-full rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:bg-stone-900/50 dark:focus:ring-amber-500/20"
+						className="w-full rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
 					/>
 				</div>
 				<div className="relative">
@@ -114,7 +114,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 					<select
 						value={filterStatus}
 						onChange={(e) => setFilterStatus(e.target.value as "active" | "inactive")}
-						className="appearance-none rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:bg-stone-900/50 dark:focus:ring-amber-500/20"
+						className="appearance-none rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
 					>
 						<option value="active">Activas</option>
 						<option value="inactive">Bajas</option>
@@ -124,7 +124,8 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 
 			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
 
-				<div className="overflow-x-auto -mx-4 md:mx-0">
+				{/* Desktop View: Table */}
+				<div className="hidden md:block overflow-x-auto -mx-4 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
 							<tr className="border-b border-stone-100 dark:border-stone-800">
@@ -147,7 +148,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 								filteredInvoices.map((invoice, index) => (
 									<tr key={index} className="border-b border-stone-100 dark:border-stone-800">
 										<td className="py-4 text-sm">{invoice.quoteNumber || "-"}</td>
-										<td className="py-4 text-sm font-medium text-stone-600 dark:text-stone-300">
+										<td className="py-4 text-sm">
 											{new Date(invoice.date).toLocaleDateString("es-AR")}
 										</td>
 										<td className="py-4 text-sm">{invoice.customerName || invoice.customer || "Consumidor Final"}</td>
@@ -188,6 +189,66 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 							)}
 						</tbody>
 					</table>
+				</div>
+
+				{/* Mobile View: Cards */}
+				<div className="md:hidden space-y-4">
+					{filteredInvoices.length === 0 ? (
+						<div className="text-center py-8 text-stone-500">
+							No hay facturas {filterStatus === "active" ? "activas" : "dadas de baja"}
+						</div>
+					) : (
+						filteredInvoices.map((invoice, index) => (
+							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 dark:border-stone-800 shadow-sm space-y-3">
+								<div className="flex justify-between items-start">
+									<div>
+										<p className="text-sm font-bold text-[var(--text-primary)]">
+											{invoice.quoteNumber || "-"}
+										</p>
+										<p className="text-xs text-stone-500">
+											{new Date(invoice.date).toLocaleDateString("es-AR")}
+										</p>
+									</div>
+									<div className="text-sm font-bold text-[var(--text-primary)]">
+										${invoice.total?.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm font-medium text-[var(--text-primary)]">
+										{invoice.customerName || invoice.customer || "Consumidor Final"}
+									</p>
+									<p className="text-xs text-stone-500">
+										{invoice.city || "Sin localidad"}
+									</p>
+								</div>
+
+								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
+									<button
+										onClick={() => handleViewInvoice(invoice)}
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors"
+									>
+										<Eye className="h-3 w-3" /> Ver
+									</button>
+									{filterStatus === "active" ? (
+										<button
+											onClick={() => setConfirmModal({ isOpen: true, type: "delete", invoiceId: invoice.id })}
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+										>
+											<Trash2 className="h-3 w-3" /> Baja
+										</button>
+									) : (
+										<button
+											onClick={() => setConfirmModal({ isOpen: true, type: "restore", invoiceId: invoice.id })}
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition-colors"
+										>
+											<RotateCcw className="h-3 w-3" /> Restaurar
+										</button>
+									)}
+								</div>
+							</div>
+						))
+					)}
 				</div>
 
 				{/* Confirm Modal (Basic implementation included in this component for simplicity, 

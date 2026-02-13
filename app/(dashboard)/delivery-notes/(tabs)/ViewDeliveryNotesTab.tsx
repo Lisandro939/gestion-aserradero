@@ -41,7 +41,9 @@ export default function ViewDeliveryNotesTab() {
 			await fetch("/api/delivery-notes")
 				.then((res) => res.json())
 				.then((data) => {
-					setDeliveryNotes(data.data);
+					// Sort by ID descending (newest first)
+					const sortedData = data.data.sort((a: any, b: any) => Number(b.id) - Number(a.id));
+					setDeliveryNotes(sortedData);
 				});
 		} catch (error) {
 			console.error("Error loading delivery notes:", error);
@@ -134,7 +136,7 @@ export default function ViewDeliveryNotesTab() {
 						placeholder="Buscar por número, cliente o CUIT..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-full rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:bg-stone-900/50 dark:focus:ring-amber-500/20"
+						className="w-full rounded-xl border border-stone-200 bg-[var(--card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
 					/>
 				</div>
 				<div className="relative">
@@ -142,7 +144,7 @@ export default function ViewDeliveryNotesTab() {
 					<select
 						value={filterStatus}
 						onChange={(e) => setFilterStatus(e.target.value as "active" | "inactive")}
-						className="appearance-none rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:bg-stone-900/50 dark:focus:ring-amber-500/20"
+						className="appearance-none rounded-xl border border-stone-200 bg-[var(--card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
 					>
 						<option value="active">Activos</option>
 						<option value="inactive">Bajas</option>
@@ -151,7 +153,9 @@ export default function ViewDeliveryNotesTab() {
 			</div>
 
 			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
-				<div className="overflow-x-auto -mx-4 md:mx-0">
+
+				{/* Desktop View: Table */}
+				<div className="hidden md:block overflow-x-auto -mx-4 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
 							<tr className="border-b border-stone-100 dark:border-stone-800">
@@ -201,7 +205,7 @@ export default function ViewDeliveryNotesTab() {
 										<td className="py-4 text-sm">
 											{formatDate(note.date)}
 										</td>
-										<td className="py-4 text-sm font-medium text-stone-600 dark:text-stone-300">
+										<td className="py-4 text-sm">
 											{note.salePoint?.toString().padStart(3, "0") || "-"}
 										</td>
 										<td className="py-4 text-sm">
@@ -246,6 +250,68 @@ export default function ViewDeliveryNotesTab() {
 							)}
 						</tbody>
 					</table>
+				</div>
+
+				{/* Mobile View: Cards */}
+				<div className="md:hidden space-y-4">
+					{loading ? (
+						<div className="text-center py-8 text-stone-500">Cargando remitos...</div>
+					) : filteredNotes.length === 0 ? (
+						<div className="text-center py-8 text-stone-500">
+							No hay remitos {filterStatus === "active" ? "activos" : "eliminados"} que coincidan con la búsqueda
+						</div>
+					) : (
+						filteredNotes.map((note, index) => (
+							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 dark:border-stone-800 shadow-sm space-y-3">
+								<div className="flex justify-between items-start">
+									<div>
+										<p className="text-sm font-bold text-[var(--card-foreground)]">
+											{note.number || "-"}
+										</p>
+										<p className="text-xs text-stone-500">
+											{formatDate(note.date)}
+										</p>
+									</div>
+									<div className="bg-[var(--secondary-card)] px-2 py-1 rounded text-xs text-stone-500">
+										{note.items?.length || 0} items
+									</div>
+								</div>
+
+								<div>
+									<p className="text-sm font-medium text-[var(--card-foreground)]">
+										{note.customer?.name || "Sin cliente"}
+									</p>
+									<p className="text-xs text-stone-500">
+										{note.customer?.taxId ? `CUIT: ${note.customer.taxId}` : "Sin CUIT"}
+									</p>
+								</div>
+
+								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
+									<button
+										onClick={() => handleViewNote(note)}
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors"
+									>
+										<Eye className="h-3 w-3" /> Ver
+									</button>
+									{filterStatus === "active" ? (
+										<button
+											onClick={() => setConfirmModal({ isOpen: true, type: "delete", noteId: note.id })}
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+										>
+											<Trash2 className="h-3 w-3" /> Eliminar
+										</button>
+									) : (
+										<button
+											onClick={() => setConfirmModal({ isOpen: true, type: "restore", noteId: note.id })}
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition-colors"
+										>
+											<RotateCcw className="h-3 w-3" /> Restaurar
+										</button>
+									)}
+								</div>
+							</div>
+						))
+					)}
 				</div>
 
 

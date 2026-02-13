@@ -44,7 +44,16 @@ const SAWMILL_DATA = {
 	vatCondition: "IVA RESPONSABLE INSCRIPTO",
 };
 
-export function getDeliveryNoteDoc(data: DeliveryNoteData) {
+const loadImage = (url: string): Promise<HTMLImageElement> => {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.src = url;
+		img.onload = () => resolve(img);
+		img.onerror = (err) => reject(err);
+	});
+};
+
+export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 	const doc = new jsPDF({
 		orientation: "portrait",
 		unit: "mm",
@@ -71,38 +80,42 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 
 	// ==================== LEFT SIDE - SAWMILL DATA ====================
 
-	// Circular logo (simulated)
-	const logoX = margin + 25;
-	const logoY = 28;
-	const logoRadius = 15;
+	// Logo - Grayscale
+	const logoX = margin + 5;
+	const logoY = margin + 5;
+	const logoWidth = 30;
 
-	doc.setDrawColor(0);
-	doc.setLineWidth(1);
-	doc.circle(logoX, logoY, logoRadius);
+	try {
+		const logo = await loadImage("/logo-aserradero.png");
+		const logoHeight = (logo.height * logoWidth) / logo.width;
 
-	// Inner circle (simulated saw)
-	doc.setLineWidth(0.5);
-	doc.circle(logoX, logoY, logoRadius - 3);
-
-	// Logo text
-	doc.setFontSize(6);
-	doc.setFont("helvetica", "bold");
-
-	// Circular text "ASERRADERO"
-	doc.text("ASERRADERO", logoX, logoY - 5, { align: "center" });
-	doc.text("DON GUSTAVO", logoX, logoY + 1, { align: "center" });
-
-	// Draw saw teeth (radial lines)
-	for (let i = 0; i < 16; i++) {
-		const angle = (i * 360) / 16;
-		const rad = (angle * Math.PI) / 180;
-		const innerR = logoRadius - 3;
-		const outerR = logoRadius;
-		const x1 = logoX + Math.cos(rad) * innerR;
-		const y1 = logoY + Math.sin(rad) * innerR;
-		const x2 = logoX + Math.cos(rad) * outerR;
-		const y2 = logoY + Math.sin(rad) * outerR;
-		doc.line(x1, y1, x2, y2);
+		// Create canvas to make it grayscale
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		if (ctx) {
+			canvas.width = logo.width;
+			canvas.height = logo.height;
+			ctx.drawImage(logo, 0, 0);
+			const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			const data = imgData.data;
+			for (let i = 0; i < data.length; i += 4) {
+				const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+				data[i] = avg; // red
+				data[i + 1] = avg; // green
+				data[i + 2] = avg; // blue
+			}
+			ctx.putImageData(imgData, 0, 0);
+			const grayscaleDataUrl = canvas.toDataURL('image/png');
+			doc.addImage(grayscaleDataUrl, "PNG", logoX, logoY, logoWidth, logoHeight);
+		} else {
+			doc.addImage(logo, "PNG", logoX, logoY, logoWidth, logoHeight);
+		}
+	} catch (e) {
+		console.error("Could not load logo", e);
+		// Fallback drawing or text
+		doc.setFontSize(14);
+		doc.setFont("helvetica", "bold");
+		doc.text("ASERRADERO", logoX + 10, logoY + 10);
 	}
 
 	// Sawmill info
@@ -155,7 +168,7 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 	// Document Number
 	doc.setFontSize(10);
 	doc.setFont("helvetica", "bold");
-	doc.text(`N°${data.salePoint}:`, xBoxX + xBoxSize + 5, 35);
+	doc.text(`N°${(data.salePoint || "001").toString()}:`, xBoxX + xBoxSize + 5, 35);
 	doc.text(data.documentNumber.padStart(8, "0"), xBoxX + xBoxSize + 30, 35);
 
 	// Date
@@ -183,6 +196,13 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 		xBoxX + 40,
 		fiscalY2 + 3.5
 	);
+	// Add Sale Point here as requested
+	doc.text(
+		`PUNTO DE VENTA: ${(data.salePoint || "001").toString()}`,
+		xBoxX + 40,
+		fiscalY2 + 7
+	);
+	doc.setFont("helvetica", "normal");
 
 	// ==================== CUSTOMER SECTION ====================
 
@@ -283,7 +303,7 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 
 	doc.setLineWidth(0.2);
 	doc.setFont("helvetica", "normal");
-	doc.setFontSize(8);
+	doc.setFontSize(10);
 
 	let rowIndex = 0;
 	while (currentY + rowHeight < tableEndY) {
@@ -294,10 +314,10 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 		if (rowIndex < data.items.length) {
 			const item = data.items[rowIndex];
 			if (item.quantity) {
-				doc.text(String(item.quantity), margin + 3, currentY - 2);
+				doc.text(String(item.quantity), margin + 3, currentY - 3);
 			}
 			if (item.description) {
-				doc.text(item.description, margin + quantityWidth + 3, currentY - 5);
+				doc.text(item.description, margin + quantityWidth + 3, currentY - 3);
 			}
 		}
 		rowIndex++;
@@ -338,7 +358,7 @@ export function getDeliveryNoteDoc(data: DeliveryNoteData) {
 	return doc;
 }
 
-export function generateDeliveryNotePDF(data: DeliveryNoteData) {
-	const doc = getDeliveryNoteDoc(data);
+export async function generateDeliveryNotePDF(data: DeliveryNoteData) {
+	const doc = await getDeliveryNoteDoc(data);
 	doc.save(`remito_${data.documentNumber.padStart(8, "0")}.pdf`);
 }

@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/features/auth/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const navItems = [
 	{ name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -60,11 +61,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 			>
 				<div className="flex h-full flex-col p-6">
 					<div className="mb-10 flex items-center gap-3 px-2">
-						<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-600 text-white shadow-lg shadow-amber-600/20">
-							<Package className="h-6 w-6" />
-						</div>
+						<Image
+							src="/logo-aserradero.png"
+							alt="Logo"
+							width={50}
+							height={50}
+						/>
 						<span className="text-xl font-bold tracking-tight text-[var(--foreground)]">
-							Aserradero{" "}
+							Aserradero <br />
 							<span className="text-amber-600">Don Gustavo</span>
 						</span>
 					</div>
@@ -81,7 +85,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 										"group relative flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
 										isActive
 											? "bg-amber-600 text-white shadow-lg shadow-amber-600/20"
-											: "text-stone-500 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-white"
+											: "text-stone-500 hover:bg-[var(--secondary-card)] hover:text-[var(--foreground)]"
 									)}
 								>
 									<div className="flex items-center gap-3">
@@ -90,7 +94,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 												"h-5 w-5",
 												isActive
 													? "text-white"
-													: "text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300"
+													: "text-stone-400 group-hover:text-[var(--foreground)]"
 											)}
 										/>
 										{item.name}
