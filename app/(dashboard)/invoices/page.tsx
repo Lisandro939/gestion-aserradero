@@ -30,7 +30,7 @@ export default function InvoicesPage() {
 			<div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center md:justify-between">
 				<div>
 					<h1 className="text-xl md:text-2xl font-bold text-[var(--card-foreground)]">
-						{activeTab === "view" ? "Facturas" : "Nueva Factura"}
+						{activeTab === "view" ? "Facturas" : "Generar Factura"}
 					</h1>
 					<p className="text-xs md:text-sm text-stone-500">
 						{activeTab === "view"
@@ -45,7 +45,7 @@ export default function InvoicesPage() {
 						className="cursor-pointer flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 md:px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-amber-700 active:scale-95 shadow-lg shadow-amber-600/20 w-full md:w-auto"
 					>
 						<Plus className="h-4 w-4" />
-						Nueva factura
+						Generar factura
 					</button>
 				) : (
 					<button
