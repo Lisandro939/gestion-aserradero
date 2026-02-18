@@ -25,6 +25,7 @@ export async function GET(
 				customerName: customers.name,
 				customerAddress: customers.address,
 				customerTaxId: customers.taxId,
+				customerBalance: customers.currentBalance,
 				date: deliveryNotes.date,
 				status: deliveryNotes.status,
 				total: deliveryNotes.total,
@@ -63,6 +64,7 @@ export async function GET(
 		return NextResponse.json({
 			...note,
 			total: note.total / 100, // Convert to user friendly currency
+			customerBalance: (note.customerBalance || 0) / 100,
 			items: items.map((item) => ({
 				...item,
 				unitPrice: (item.unitPrice || 0) / 100, // Handle nullable

@@ -153,7 +153,9 @@ export default function DeliveryNoteDetailPage() {
 									<div>
 										<h3 className="text-xs font-bold text-stone-400 uppercase mb-2">Datos del Cliente</h3>
 										<div className="p-4 rounded-2xl bg-[var(--secondary-card)] space-y-2">
-											<p className="font-bold text-lg">{note.customerName || "Consumidor Final"}</p>
+											<div className="flex flex-wrap justify-between items-center gap-2">
+												<p className="font-bold text-lg">{note.customerName || "Consumidor Final"}</p>
+											</div>
 											<div className="space-y-1 text-sm text-stone-500">
 												<p>CUIT: {note.customerTaxId || "-"}</p>
 												<p>{note.customerAddress}</p>
@@ -183,17 +185,33 @@ export default function DeliveryNoteDetailPage() {
 											<thead className="bg-[var(--muted)] border-b border-[var(--border)]">
 												<tr>
 													<th className="py-3 px-4 text-left font-bold text-stone-500">Descripción</th>
+													<th className="py-3 px-4 text-right font-bold text-stone-500 w-32">Precio Unit.</th>
 													<th className="py-3 px-4 text-center font-bold text-stone-500 w-24">Cant.</th>
+													<th className="py-3 px-4 text-right font-bold text-stone-500 w-32">Total</th>
 												</tr>
 											</thead>
 											<tbody className="divide-y divide-[var(--border)]">
 												{note.items?.map((item: any, i: number) => (
 													<tr key={i} className="hover:bg-[var(--muted)]/50">
 														<td className="py-3 px-4">{item.detail || item.description}</td>
+														<td className="py-3 px-4 text-right font-medium text-stone-600 dark:text-stone-400">
+															{item.unitPrice ? item.unitPrice.toLocaleString("es-AR", { style: "currency", currency: "ARS" }) : "-"}
+														</td>
 														<td className="py-3 px-4 text-center font-bold text-[var(--card-foreground)]">{item.quantity}</td>
+														<td className="py-3 px-4 text-right font-bold text-[var(--card-foreground)]">
+															{item.subtotal ? item.subtotal.toLocaleString("es-AR", { style: "currency", currency: "ARS" }) : "-"}
+														</td>
 													</tr>
 												))}
 											</tbody>
+											<tfoot className="bg-[var(--muted)]/50 border-t border-[var(--border)]">
+												<tr>
+													<td colSpan={3} className="py-4 px-4 text-right font-bold text-stone-500 uppercase text-xs">Total General:</td>
+													<td className="py-4 px-4 text-right font-bold text-xl text-[var(--card-foreground)]">
+														{note.total ? note.total.toLocaleString("es-AR", { style: "currency", currency: "ARS" }) : "$ 0,00"}
+													</td>
+												</tr>
+											</tfoot>
 										</table>
 									</div>
 									{note.notes && (

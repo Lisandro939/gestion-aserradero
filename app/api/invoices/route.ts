@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { invoices, invoiceItems } from "@/lib/db/schema";
+import { invoices, invoiceItems, customers, transactions } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 
 // GET - Get all invoices
@@ -159,6 +159,51 @@ export async function POST(request: NextRequest) {
 				total: totalInCents,
 			})
 			.returning();
+
+		// Try to find customer by name to link transaction (Best effort)
+		// We should probably rely on exact match or passed ID if we had it.
+		// Since we don't have ID, we try to match by name (case insensitive potentially, but here exact for safety)
+		const [customer] = await db
+			.select()
+			.from(customers)
+			.where(eq(customers.name, resolvedCustomerName))
+			.limit(1);
+
+		if (customer) {
+			// Update customer balance: Purchase increases debt (negative in our logic? No, check transaction logic)
+			// In transaction route logic:
+			// Purchase -> netAmount = -amountCents (decreases balance, if balance is "funds")
+			// But if "Saldo" = "Debt", purchase should increase it.
+			// Currently: customer.currentBalance + netAmount.
+
+			// Let's match transaction route logic:
+			// const netAmount = (transactionType === "payment") ? amountCents : -amountCents;
+			// Purchase -> negative amount.
+
+			const netAmount = -totalInCents;
+			const newBalance = customer.currentBalance + netAmount;
+
+			// Create transaction
+			await db.insert(transactions).values({
+				customerId: customer.id,
+				type: "purchase",
+				description: `Factura ${newInvoice.salePoint.toString().padStart(4, "0")}-${newInvoice.id.toString().padStart(8, "0")} (Auto)`,
+				amount: netAmount,
+				balance: newBalance,
+				paymentMethod: "current_account",
+				documentNumber: `${newInvoice.salePoint.toString().padStart(4, "0")}-${newInvoice.id.toString().padStart(8, "0")}`,
+				date: dateObj,
+			});
+
+			// Update customer balance
+			await db.update(customers)
+				.set({
+					currentBalance: newBalance,
+					lastPurchaseDate: dateObj,
+					updatedAt: new Date()
+				})
+				.where(eq(customers.id, customer.id));
+		}
 
 		// Create items
 		if (processedItems.length > 0) {

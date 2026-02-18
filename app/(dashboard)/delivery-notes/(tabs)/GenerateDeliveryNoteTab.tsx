@@ -27,7 +27,7 @@ export default function GenerateDeliveryNoteTab() {
 		saleCondition: "cash",
 		vatCondition: "finalConsumer",
 		items: [
-			{ quantity: "", description: "" },
+			{ quantity: "", description: "", price: "", amount: "" },
 		],
 	});
 
@@ -135,6 +135,13 @@ export default function GenerateDeliveryNoteTab() {
 				await saveHistoricalItems(newItems);
 			}
 
+			// Validate items for price calculation
+			const itemsWithPrice = formData.items.map(item => ({
+				...item,
+				price: parseFloat(item.price || "0"),
+				amount: parseFloat(item.amount || "0"),
+			}));
+
 			// Save Delivery Note to Database
 			const response = await fetch("/api/delivery-notes", {
 				method: "POST",
@@ -147,7 +154,12 @@ export default function GenerateDeliveryNoteTab() {
 					customerId: formData.customerId, // Send customerId
 					customerAddress: formData.address,
 					customerCuit: formData.taxId,
-					items: formData.items,
+					items: itemsWithPrice.map(item => ({
+						description: item.description,
+						quantity: parseInt(item.quantity) || 0,
+						unitPrice: item.price,
+						subtotal: item.amount
+					})),
 					notes: "", // Add notes if needed
 					status: "pending"
 				}),
@@ -163,19 +175,7 @@ export default function GenerateDeliveryNoteTab() {
 			// Show success modal
 			setShowSuccessModal(true);
 
-			// Fetch next number for future use if they stay on page?
-			// Or only if they clear form?
-			// Let's create a reset function or just leave it.
-			// If they click "Aceptar" on modal, maybe we reload or something?
-			// The modal has "Aceptar" -> `setShowSuccessModal(false)`.
-			// It doesn't clear the form.
-			// I'll update the number anyway so if they edit and save again (copy) it has new number?
-			// No, that might be confusing.
-			// Let's just update it here so if they start a new one it's ready.
 			fetchNextNumber();
-
-			// Optional: Clear form? Or leave it?
-			// User might want to print again.
 
 		} catch (error) {
 			console.error("Error generating delivery note:", error);
@@ -196,7 +196,6 @@ export default function GenerateDeliveryNoteTab() {
 				customerId: selectedCustomer.id.toString(), // Set customerId
 				address: selectedCustomer.address,
 				taxId: selectedCustomer.cuit,
-				// Optionally set other fields if schematic supports it (e.g. saleCondition if stored in customer)
 			}));
 		} else {
 			// Reset if empty selection
@@ -279,6 +278,14 @@ export default function GenerateDeliveryNoteTab() {
 		setFormData((prev) => {
 			const newItems = [...prev.items];
 			newItems[index] = { ...newItems[index], [field]: value };
+
+			// Calculate Total if Quantity or Price changes
+			if (field === "quantity" || field === "price") {
+				const qty = parseFloat(newItems[index].quantity) || 0;
+				const price = parseFloat(newItems[index].price || "0") || 0;
+				newItems[index].amount = (qty * price).toFixed(2);
+			}
+
 			return { ...prev, items: newItems };
 		});
 
@@ -310,7 +317,7 @@ export default function GenerateDeliveryNoteTab() {
 	const addItem = () => {
 		setFormData((prev) => ({
 			...prev,
-			items: [...prev.items, { quantity: "", description: "" }],
+			items: [...prev.items, { quantity: "", description: "", price: "", amount: "" }],
 		}));
 	};
 
@@ -322,6 +329,9 @@ export default function GenerateDeliveryNoteTab() {
 			}));
 		}
 	};
+
+	// Calculate Grand Total
+	const grandTotal = formData.items.reduce((sum, item) => sum + (parseFloat(item.amount || "0") || 0), 0);
 
 	return (
 		<div className="space-y-3 md:space-y-4">
@@ -491,9 +501,11 @@ export default function GenerateDeliveryNoteTab() {
 					<table className="w-full min-w-[640px] text-left">
 						<thead>
 							<tr className="border-b border-neutral-100 text-[10px] font-bold uppercase tracking-wider text-stone-400 dark:border-neutral-800">
-								<th className="py-3 pl-4 w-[5vw] text-center">Cantidad</th>
+								<th className="py-3 pl-4 w-[5vw] text-center">Cant.</th>
 								<th className="py-3 px-4">Descripción / Detalle</th>
-								<th className="py-3 pr-4 w-12 text-center">Acción</th>
+								<th className="py-3 px-4 w-[15vw] text-right">Precio Unit.</th>
+								<th className="py-3 px-4 w-[15vw] text-right">Total</th>
+								<th className="py-3 pr-4 w-12 text-center"></th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -501,12 +513,12 @@ export default function GenerateDeliveryNoteTab() {
 								<tr key={index}>
 									<td className="py-2 pl-4 w-[5vw]">
 										<input
-											type="text"
+											type="number"
 											value={item.quantity}
 											onChange={(e) =>
 												handleItemChange(index, "quantity", e.target.value)
 											}
-											placeholder="10"
+											placeholder="0"
 											className="w-full rounded-xl border border-transparent bg-[var(--card)] py-2 text-center text-sm font-bold focus:border-amber-500"
 										/>
 									</td>
@@ -522,12 +534,28 @@ export default function GenerateDeliveryNoteTab() {
 												onFocus={() => handleInputFocus(index)}
 												onBlur={() => {
 													setActiveInputIndex(null);
-
 												}}
 												placeholder="Ej: Tablas de pino 1x6x3m"
 												className="w-full rounded-xl border border-transparent bg-[var(--card)] py-2 px-3 text-sm focus:border-amber-500"
 											/>
 										</div>
+									</td>
+									<td className="py-2 px-4">
+										<div className="relative">
+											<span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-xs">$</span>
+											<input
+												type="number"
+												value={item.price}
+												onChange={(e) =>
+													handleItemChange(index, "price", e.target.value)
+												}
+												placeholder="0.00"
+												className="w-full rounded-xl border border-transparent bg-[var(--card)] py-2 pl-6 pr-2 text-right text-sm focus:border-amber-500"
+											/>
+										</div>
+									</td>
+									<td className="py-2 px-4 text-right font-bold text-[var(--foreground)]">
+										$ {parseFloat(item.amount || "0").toLocaleString("es-AR", { minimumFractionDigits: 2 })}
 									</td>
 									<td className="py-2 pr-4 text-center">
 										<button
@@ -541,6 +569,15 @@ export default function GenerateDeliveryNoteTab() {
 								</tr>
 							))}
 						</tbody>
+						<tfoot>
+							<tr className="border-t border-stone-200 dark:border-stone-800">
+								<td colSpan={3} className="py-4 text-right font-bold text-[var(--foreground)] uppercase text-sm">Total General:</td>
+								<td className="py-4 px-4 text-right font-bold text-xl text-[var(--foreground)]">
+									$ {grandTotal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+								</td>
+								<td></td>
+							</tr>
+						</tfoot>
 					</table>
 				</div>
 				<button

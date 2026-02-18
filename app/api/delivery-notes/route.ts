@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { deliveryNotes, deliveryNoteItems, customers, products } from "@/lib/db/schema";
+import { deliveryNotes, deliveryNoteItems, customers, products, transactions } from "@/lib/db/schema";
 import { eq, like, or, and, desc, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -75,6 +75,17 @@ export async function POST(request: NextRequest) {
 
 		// Start transaction
 		const result = await db.transaction(async (tx) => {
+			// 0. Get current customer state
+			const [customer] = await tx
+				.select()
+				.from(customers)
+				.where(eq(customers.id, customerId))
+				.limit(1);
+
+			if (!customer) {
+				throw new Error("Cliente no encontrado");
+			}
+
 			// 1. Create Delivery Note
 			const [newNote] = await tx
 				.insert(deliveryNotes)
@@ -111,6 +122,9 @@ export async function POST(request: NextRequest) {
 				});
 
 				// Optional: Decrease product stock if productId exists
+				if (productId) {
+					// Logic to decrease stock later
+				}
 			}
 
 			// 3. Update total in Delivery Note
@@ -118,6 +132,30 @@ export async function POST(request: NextRequest) {
 				.update(deliveryNotes)
 				.set({ total: calculatedTotal })
 				.where(eq(deliveryNotes.id, newNote.id));
+
+			// 4. Update Customer Balance & Create Ledger Transaction
+			// Delivery Note = Purchase (Increases Debt / Decreases Balance if Balance is 'Cash')
+			// Assuming Balance is 'Available Funds': Purchase is negative.
+			const netAmount = -calculatedTotal;
+			const newBalance = customer.currentBalance + netAmount;
+
+			await tx.update(customers).set({
+				currentBalance: newBalance,
+				lastPurchaseDate: new Date(),
+				updatedAt: new Date()
+			}).where(eq(customers.id, customerId));
+
+			// Create the Transaction Record
+			await tx.insert(transactions).values({
+				customerId,
+				type: "purchase",
+				description: `Remito #${documentNumber}`,
+				amount: netAmount,
+				balance: newBalance,
+				paymentMethod: "current_account",
+				documentNumber: documentNumber,
+				date: parseDate(date), // Use remito date
+			});
 
 			return { ...newNote, total: calculatedTotal };
 		});
@@ -127,7 +165,7 @@ export async function POST(request: NextRequest) {
 			total: result.total / 100
 		}, { status: 201 });
 
-	} catch (error) {
+	} catch (error: any) {
 		console.error("Error creating delivery note:", error);
 		if ((error as any).code === "SQLITE_CONSTRAINT") { // quick check unique constraint
 			return NextResponse.json(
@@ -136,7 +174,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 		return NextResponse.json(
-			{ error: "Internal Server Error" },
+			{ error: error.message || "Internal Server Error" },
 			{ status: 500 }
 		);
 	}

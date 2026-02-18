@@ -59,7 +59,34 @@ export const transactions = sqliteTable("transactions", {
 	description: text("description").notNull(),
 	amount: integer("amount").notNull(), // In cents, negative for purchases, positive for payments
 	balance: integer("balance").notNull(), // Balance after transaction, in cents
+	paymentMethod: text("payment_method", {
+		enum: ["cash", "transfer", "cheque", "current_account"],
+	}).default("current_account"),
+	documentNumber: text("document_number"), // Remito or Invoice number
 	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	deletedAt: integer("deleted_at", { mode: "timestamp" }),
+});
+
+// Cheques table
+export const cheques = sqliteTable("cheques", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	transactionId: integer("transaction_id")
+		.notNull()
+		.references(() => transactions.id, { onDelete: "cascade" }),
+	number: text("number").notNull(),
+	bank: text("bank").notNull(),
+	drawerName: text("drawer_name").notNull(), // Name of the person who gave the cheque
+	amount: integer("amount").notNull(), // In cents
+	dueDate: integer("due_date", { mode: "timestamp" }).notNull(),
+	status: text("status", { enum: ["pending", "deposited", "rejected", "honored"] })
+		.notNull()
+		.default("pending"),
+	createdAt: integer("created_at", { mode: "timestamp" })
+		.notNull()
+		.default(sql`(unixepoch())`),
+	updatedAt: integer("updated_at", { mode: "timestamp" })
 		.notNull()
 		.default(sql`(unixepoch())`),
 });
@@ -185,3 +212,6 @@ export type NewInvoice = typeof invoices.$inferInsert;
 
 export type InvoiceItem = typeof invoiceItems.$inferSelect;
 export type NewInvoiceItem = typeof invoiceItems.$inferInsert;
+
+export type Cheque = typeof cheques.$inferSelect;
+export type NewCheque = typeof cheques.$inferInsert;

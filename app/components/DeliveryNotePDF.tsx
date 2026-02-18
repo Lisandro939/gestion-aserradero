@@ -6,6 +6,8 @@ import { jsPDF } from "jspdf";
 export interface DeliveryNoteItem {
 	quantity: string;
 	description: string;
+	price?: string;
+	amount?: string;
 }
 
 export interface DeliveryNoteData {
@@ -281,47 +283,108 @@ export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 
 	// ==================== DETAILS TABLE ====================
 
-	const tableY = customerY + 2;
-	const quantityWidth = 25;
+	const tableY = customerY + 8;
+	const tableBottomY = pageHeight - 45; // Leave space for Grand Total
+
+	// Column Widths
+	const colQtyW = 15;
+	const colDescW = 105;
+	const colPriceW = 35;
+	const colTotalW = 35;
+
+	// X positions
+	const colQtyX = margin;
+	const colDescX = margin + colQtyW;
+	const colPriceX = margin + colQtyW + colDescW;
+	const colTotalX = margin + colQtyW + colDescW + colPriceW;
 
 	// Table Headers
 	doc.setFontSize(9);
 	doc.setFont("helvetica", "bold");
-	doc.text("CANTIDAD", margin + 3, tableY + 5);
-	doc.text("DETALLE", margin + quantityWidth + 10, tableY + 5);
+	doc.text("CANT.", colQtyX + 2, tableY + 5);
+	doc.text("DETALLE", colDescX + 2, tableY + 5);
+	doc.text("P. UNIT.", colPriceX + 17, tableY + 5, { align: "center" });
+	doc.text("TOTAL", colTotalX + 17, tableY + 5, { align: "center" });
 
 	// Header divider
 	doc.line(margin, tableY + 7, pageWidth - margin, tableY + 7);
 
-	// Vertical line between QUANTITY and DETAIL
-	doc.line(margin + quantityWidth, tableY, margin + quantityWidth, pageHeight - 35);
+	// Vertical lines
+	doc.line(colDescX, tableY, colDescX, tableBottomY); // Line after Qty
+	doc.line(colPriceX, tableY, colPriceX, tableBottomY); // Line after Desc
+	doc.line(colTotalX, tableY, colTotalX, tableBottomY); // Line after Price
 
 	// Table lines and content
 	const rowHeight = 8;
 	let currentY = tableY + 7;
-	const tableEndY = pageHeight - 35;
 
 	doc.setLineWidth(0.2);
 	doc.setFont("helvetica", "normal");
 	doc.setFontSize(10);
 
 	let rowIndex = 0;
-	while (currentY + rowHeight < tableEndY) {
+	while (currentY + rowHeight < tableBottomY) {
 		currentY += rowHeight;
+
+		// Horizontal line
 		doc.line(margin, currentY, pageWidth - margin, currentY);
 
 		// Add items data if exists
 		if (rowIndex < data.items.length) {
 			const item = data.items[rowIndex];
+
+			// Cantidad (Centered)
 			if (item.quantity) {
-				doc.text(String(item.quantity), margin + 3, currentY - 3);
+				doc.text(String(item.quantity), colQtyX + colQtyW / 2, currentY - 2.5, { align: "center" });
 			}
+
+			// Description
 			if (item.description) {
-				doc.text(item.description, margin + quantityWidth + 3, currentY - 3);
+				const desc = item.description.length > 55 ? item.description.substring(0, 52) + "..." : item.description;
+				doc.text(desc, colDescX + 2, currentY - 2.5);
+			}
+
+			// Unit Price
+			if (item.price) {
+				const priceVal = parseFloat(item.price);
+				if (!isNaN(priceVal)) {
+					doc.text(
+						`$ ${priceVal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`,
+						colTotalX - 2, // Right aligned in Price column? No, colTotalX is start of Total col. Price col ends at colTotalX.
+						currentY - 2.5,
+						{ align: "right" }
+					);
+				}
+			}
+
+			// Total
+			if (item.amount) {
+				const amountVal = parseFloat(item.amount);
+				if (!isNaN(amountVal)) {
+					doc.text(
+						`$ ${amountVal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`,
+						pageWidth - margin - 2,
+						currentY - 2.5,
+						{ align: "right" }
+					);
+				}
 			}
 		}
 		rowIndex++;
 	}
+
+	// ==================== GRAND TOTAL ====================
+	const totalAmount = data.items.reduce((sum, item) => sum + (parseFloat(item.amount || "0") || 0), 0);
+
+	doc.setFontSize(12);
+	doc.setFont("helvetica", "bold");
+	doc.text("TOTAL GENERAL:", colPriceX + 2, tableBottomY + 7);
+	doc.text(
+		`$ ${totalAmount.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`,
+		pageWidth - margin - 2,
+		tableBottomY + 7,
+		{ align: "right" }
+	);
 
 	// ==================== FOOTER ====================
 
