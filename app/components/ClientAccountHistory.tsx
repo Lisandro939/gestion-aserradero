@@ -63,6 +63,23 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 		if (refreshData) refreshData();
 	};
 
+	// Calculate running balance dynamically
+	const processedTransactions = useMemo(() => {
+		// Sort by date ascending to calculate running balance
+		const sorted = [...transactions].sort((a, b) => (a.date || 0) - (b.date || 0));
+
+		let runningBalance = 0;
+		const withBalance = sorted.map(t => {
+			// amount: positive for payment (Credit/Haber), negative for purchase (Debit/Debe)
+			// Balance = Sum(Amounts)
+			runningBalance += t.amount;
+			return { ...t, calculatedBalance: runningBalance };
+		});
+
+		// Return reversed (newest first) for display
+		return withBalance.reverse();
+	}, [transactions]);
+
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center justify-between no-print">
@@ -72,7 +89,6 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 						customerId={customer.id}
 						onSuccess={handlePaymentSuccess}
 					/>
-					<div className="w-px h-8 bg-[var(--border)] mx-1"></div>
 					<button
 						onClick={handleDownload}
 						className="cursor-pointer flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[var(--border)] rounded-xl hover:bg-[var(--secondary)] transition-colors bg-[var(--card)] text-[var(--card-foreground)] shadow-sm"
@@ -106,8 +122,8 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-[var(--border)]">
-							{transactions.length > 0 ? (
-								transactions.map((t) => {
+							{processedTransactions.length > 0 ? (
+								processedTransactions.map((t) => {
 									const isDebit = t.type === 'purchase';
 									const debitAmount = isDebit ? Math.abs(t.amount) : 0;
 									const creditAmount = !isDebit ? t.amount : 0;
@@ -125,7 +141,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 												{creditAmount > 0 ? formatCurrency(creditAmount) : "-"}
 											</td>
 											<td className="px-6 py-4 text-right font-bold text-[var(--card-foreground)] whitespace-nowrap">
-												{formatCurrency(t.balance)}
+												{formatCurrency(t.calculatedBalance)}
 											</td>
 											<td className="px-6 py-4">
 												<div className="flex items-center gap-2">
@@ -147,7 +163,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 															<ChequeDetails
 																cheque={t.cheque}
 																trigger={
-																	<button className="cursor-pointer text-amber-600 hover:text-amber-800 transition-colors p-1 rounded-full hover:bg-amber-50" title="Ver Cheque">
+																	<button className="cursor-pointer text-stone-400 hover:text-amber-600 transition-colors p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/20 dark:hover:text-amber-400" title="Ver Cheque">
 																		<CreditCard className="h-4 w-4" />
 																	</button>
 																}
@@ -183,7 +199,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 												{
 													t.type === 'purchase' && (
 														<div className="flex items-center justify-center gap-1">
-															<a href={`/delivery-notes/${t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}`} className="cursor-pointer text-stone-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-50" title="Ver Remito">
+															<a href={`/delivery-notes/${t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}`} className="cursor-pointer text-stone-400 hover:text-sky-600 transition-colors p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/20 dark:hover:text-sky-400" title="Ver Remito">
 																<Eye className="h-4 w-4" />
 															</a>
 														</div>

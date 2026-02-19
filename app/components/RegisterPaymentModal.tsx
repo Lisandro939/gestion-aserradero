@@ -128,16 +128,16 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 					onClick={() => setIsOpen(false)}
 				>
 					<div
-						className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+						className="bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<div className="p-4 border-b flex items-center justify-between">
-							<h3 className="font-bold text-lg">Registrar Nuevo Pago</h3>
+						<div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
+							<h3 className="font-bold text-lg">Registrar nuevo pago</h3>
 							<button
 								onClick={() => setIsOpen(false)}
-								className="p-1 hover:bg-stone-100 rounded-full transition-colors"
+								className="cursor-pointer p-1 hover:bg-[var(--secondary-card)] rounded-full transition-colors"
 							>
-								<X className="h-5 w-5 text-stone-500" />
+								<X className="h-5 w-5 text-[var(--card-foreground)]/60" />
 							</button>
 						</div>
 
@@ -150,9 +150,9 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
-									<label className="text-sm font-medium text-stone-700">Monto</label>
+									<label className="text-sm font-medium text-[var(--card-foreground)]">Monto</label>
 									<div className="relative">
-										<span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500">$</span>
+										<span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--card-foreground)]/60">$</span>
 										<input
 											type="number"
 											step="0.01"
@@ -160,17 +160,17 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 											min="0"
 											value={amount}
 											onChange={(e) => setAmount(e.target.value)}
-											className="w-full pl-7 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+											className="w-full pl-7 pr-3 py-2 border border-[var(--border)] bg-[var(--card)] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[var(--card-foreground)]"
 											placeholder="0.00"
 										/>
 									</div>
 								</div>
 								<div className="space-y-2">
-									<label className="text-sm font-medium text-stone-700">Método</label>
+									<label className="text-sm font-medium text-[var(--card-foreground)]">Método</label>
 									<select
 										value={method}
 										onChange={(e) => setMethod(e.target.value)}
-										className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+										className="w-full px-3 py-2 border border-[var(--border)] bg-[var(--card)] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[var(--card-foreground)]"
 									>
 										<option value="cash">Efectivo</option>
 										<option value="transfer">Transferencia</option>
@@ -180,7 +180,7 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 							</div>
 
 							<div className="space-y-2">
-								<label className="text-sm font-medium text-stone-700 flex items-center gap-2">
+								<label className="text-sm font-medium text-[var(--card-foreground)] flex items-center gap-2">
 									<Package className="h-4 w-4" /> Asignar a Remito (Opcional)
 								</label>
 								<select
@@ -189,7 +189,7 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 										setSelectedDeliveryNote(e.target.value);
 										// Optional: Auto-fill amount if empty?
 									}}
-									className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white text-sm"
+									className="w-full px-3 py-2 border border-[var(--border)] bg-[var(--card)] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm text-[var(--card-foreground)]"
 								>
 									<option value="">-- Sin Remito / General --</option>
 									{deliveryNotes.map((note) => (
@@ -201,68 +201,68 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 							</div>
 
 							<div className="space-y-2">
-								<label className="text-sm font-medium text-stone-700">Descripción / Concepto</label>
+								<label className="text-sm font-medium text-[var(--card-foreground)]">Descripción / Concepto</label>
 								<input
 									type="text"
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
-									className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+									className="w-full px-3 py-2 border border-[var(--border)] bg-[var(--card)] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[var(--card-foreground)]"
 									placeholder={method === 'cheque' ? 'Pago con cheque...' : 'Pago parcial...'}
 								/>
 							</div>
 
 							{/* Cheque Fields */}
 							{method === "cheque" && (
-								<div className="bg-stone-50 p-4 rounded-lg space-y-4 border border-stone-200 mt-2">
-									<h4 className="font-bold text-sm text-stone-600 flex items-center gap-2">
+								<div className="bg-[var(--secondary-card)] p-4 rounded-lg space-y-4 border border-[var(--border)] mt-2">
+									<h4 className="font-bold text-sm text-[var(--card-foreground)] flex items-center gap-2">
 										<CreditCard className="h-4 w-4" /> Datos del Cheque
 									</h4>
 
 									<div className="grid grid-cols-2 gap-3">
 										<div className="space-y-1">
-											<label className="text-xs font-medium text-stone-500">Número</label>
+											<label className="text-xs font-medium text-[var(--card-foreground)]/70">Número</label>
 											<input
 												required
 												type="text"
 												value={chequeNumber}
 												onChange={(e) => setChequeNumber(e.target.value)}
-												className="w-full px-2 py-1.5 border rounded-md text-sm"
+												className="w-full px-2 py-1.5 border border-[var(--border)] bg-[var(--card)] rounded-md text-sm text-[var(--card-foreground)]"
 												placeholder="Ej: 12345678"
 											/>
 										</div>
 										<div className="space-y-1">
-											<label className="text-xs font-medium text-stone-500">Banco</label>
+											<label className="text-xs font-medium text-[var(--card-foreground)]/70">Banco</label>
 											<input
 												required
 												type="text"
 												value={chequeBank}
 												onChange={(e) => setChequeBank(e.target.value)}
-												className="w-full px-2 py-1.5 border rounded-md text-sm"
+												className="w-full px-2 py-1.5 border border-[var(--border)] bg-[var(--card)] rounded-md text-sm text-[var(--card-foreground)]"
 												placeholder="Ej: Galicia"
 											/>
 										</div>
 									</div>
 
 									<div className="space-y-1">
-										<label className="text-xs font-medium text-stone-500">Librador (Firmante)</label>
+										<label className="text-xs font-medium text-[var(--card-foreground)]/70">Librador (Firmante)</label>
 										<input
 											required
 											type="text"
 											value={chequeDrawer}
 											onChange={(e) => setChequeDrawer(e.target.value)}
-											className="w-full px-2 py-1.5 border rounded-md text-sm"
+											className="w-full px-2 py-1.5 border border-[var(--border)] bg-[var(--card)] rounded-md text-sm text-[var(--card-foreground)]"
 											placeholder="Nombre del titular"
 										/>
 									</div>
 
 									<div className="space-y-1">
-										<label className="text-xs font-medium text-stone-500">Fecha de Cobro/Vto</label>
+										<label className="text-xs font-medium text-[var(--card-foreground)]/70">Fecha de Cobro/Vto</label>
 										<input
 											required
 											type="date"
 											value={chequeDate}
 											onChange={(e) => setChequeDate(e.target.value)}
-											className="w-full px-2 py-1.5 border rounded-md text-sm"
+											className="w-full px-2 py-1.5 border border-[var(--border)] bg-[var(--card)] rounded-md text-sm text-[var(--card-foreground)]"
 										/>
 									</div>
 								</div>
@@ -272,7 +272,7 @@ export function RegisterPaymentModal({ customerId, onSuccess, trigger }: Registe
 								<button
 									type="button"
 									onClick={() => setIsOpen(false)}
-									className="cursor-pointer px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+									className="cursor-pointer px-4 py-2 text-sm font-medium text-[var(--card-foreground)] hover:bg-[var(--secondary-card)] rounded-lg transition-colors"
 									disabled={loading}
 								>
 									Cancelar

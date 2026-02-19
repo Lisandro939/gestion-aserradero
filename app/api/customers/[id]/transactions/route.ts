@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { transactions, customers, cheques } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, isNull, and } from "drizzle-orm";
 
 // GET - Obtener transacciones de un cliente
 export async function GET(
@@ -23,7 +23,7 @@ export async function GET(
 			})
 			.from(transactions)
 			.leftJoin(cheques, eq(transactions.id, cheques.transactionId))
-			.where(eq(transactions.customerId, customerId))
+			.where(and(eq(transactions.customerId, customerId), isNull(transactions.deletedAt)))
 			.orderBy(desc(transactions.id));
 
 		// Convertir centavos a pesos y fechas a timestamps

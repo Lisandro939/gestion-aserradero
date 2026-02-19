@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { customers } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { customers, transactions } from "@/lib/db/schema";
+import { eq, and, isNull } from "drizzle-orm";
 
 // GET - Obtener un cliente por ID
 export async function GET(
@@ -29,13 +29,30 @@ export async function GET(
 			);
 		}
 
+		// Calculate balance dynamically from transactions
+		const customerTransactions = await db
+			.select({
+				amount: transactions.amount,
+				type: transactions.type
+			})
+			.from(transactions)
+			.where(and(
+				eq(transactions.customerId, id),
+				isNull(transactions.deletedAt)
+			));
+
+		// Balance = Sum of payments - Sum of purchases (assuming amount is stored as net value in DB or explicit type handling)
+		// Schema says: amount is integer, negative for purchases, positive for payments.
+		// So we just sum them up.
+		const calculatedBalance = customerTransactions.reduce((sum, t) => sum + t.amount, 0);
+
 		// Convertir centavos a pesos y fechas a timestamps
 		const customerWithPesos = {
 			...customer,
-			currentBalance: customer.currentBalance / 100,
+			currentBalance: calculatedBalance / 100, // Use calculated balance
 			creditLimit: customer.creditLimit / 100,
 			// Mapeo para compatibilidad
-			saldoActual: customer.currentBalance / 100,
+			saldoActual: calculatedBalance / 100,
 			limiteCredito: customer.creditLimit / 100,
 			nombre: customer.name,
 			direccion: customer.address,

@@ -18,11 +18,19 @@ function parseDate(dateStr: string | undefined | null): Date {
 	return isNaN(d.getTime()) ? new Date() : d;
 }
 
-// GET - List delivery notes without pagination or filters
+// GET - List delivery notes with optional filters
 export async function GET(request: NextRequest) {
 	try {
+		const { searchParams } = new URL(request.url);
+		const customerIdParam = searchParams.get("customerId");
+
+		const whereClause = customerIdParam
+			? eq(deliveryNotes.customerId, parseInt(customerIdParam))
+			: undefined;
+
 		// Fetch records with relations
 		const result = await db.query.deliveryNotes.findMany({
+			where: whereClause,
 			with: {
 				customer: true,
 				items: true,

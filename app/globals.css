@@ -46,3 +46,7 @@ body {
 .glass {
 	@apply bg-white/70 backdrop-blur-md dark:bg-stone-900/70 border border-stone-200/50 dark:border-stone-800/20;
 }
+
+button {
+        cursor: pointer;
+}

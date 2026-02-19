@@ -306,7 +306,7 @@ export default function SettingsPage() {
 											disabled={
 												isLoading
 											}
-											className="cursor-pointer ml-auto flex items-center gap-2 rounded-xl bg-[var(--foreground)] px-6 py-2.5 text-sm font-bold text-white"
+											className="cursor-pointer ml-auto flex items-center gap-2 rounded-xl bg-[var(--foreground)] px-6 py-2.5 text-sm font-bold text-[var(--card)]"
 										>
 											{isLoading ? (
 												<Loader2 className="h-4 w-4 animate-spin" />

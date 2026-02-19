@@ -40,7 +40,7 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 		<>
 			<button
 				onClick={() => setIsOpen(true)}
-				className="cursor-pointer p-1 text-stone-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+				className="cursor-pointer p-2 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-100 transition-colors dark:hover:bg-red-900/20 dark:hover:text-red-400"
 				title="Eliminar"
 			>
 				<Trash2 className="h-4 w-4" />

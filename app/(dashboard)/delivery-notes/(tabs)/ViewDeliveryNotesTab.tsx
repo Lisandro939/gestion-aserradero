@@ -221,7 +221,7 @@ export default function ViewDeliveryNotesTab() {
 											<div className="flex items-center justify-center gap-2">
 												<button
 													onClick={() => handleViewNote(note)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-amber-600 transition-all dark:hover:bg-stone-800"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 hover:text-sky-600 transition-all dark:hover:bg-sky-900/20 dark:hover:text-sky-400"
 													title="Ver detalle"
 												>
 													<Eye className="h-4 w-4" />
@@ -229,7 +229,7 @@ export default function ViewDeliveryNotesTab() {
 												{filterStatus === "active" ? (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "delete", noteId: note.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-50 hover:text-red-600 transition-all dark:hover:bg-red-900/10"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/20 dark:hover:text-red-400"
 														title="Eliminar"
 													>
 														<Trash2 className="h-4 w-4" />
@@ -237,7 +237,7 @@ export default function ViewDeliveryNotesTab() {
 												) : (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "restore", noteId: note.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-green-50 hover:text-green-600 transition-all dark:hover:bg-green-900/10"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
 														title="Restaurar"
 													>
 														<RotateCcw className="h-4 w-4" />
@@ -289,7 +289,7 @@ export default function ViewDeliveryNotesTab() {
 								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
 									<button
 										onClick={() => handleViewNote(note)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors"
 									>
 										<Eye className="h-3 w-3" /> Ver
 									</button>

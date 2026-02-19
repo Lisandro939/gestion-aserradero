@@ -457,7 +457,7 @@ export default function CustomersPage() {
 										<div className="flex items-center justify-center gap-2">
 											<button
 												onClick={() => handleViewCustomer(customer)}
-												className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-blue-100 hover:text-blue-600 transition-all dark:hover:bg-blue-900/30"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 hover:text-sky-600 transition-all dark:hover:bg-sky-900/20 dark:hover:text-sky-400"
 												title="Ver detalles"
 											>
 												<Eye className="h-4 w-4" />
@@ -467,7 +467,7 @@ export default function CustomersPage() {
 													setSelectedCustomer(customer);
 													setShowModal("edit");
 												}}
-												className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-amber-100 hover:text-amber-600 transition-all dark:hover:bg-amber-900/30"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-100 hover:text-amber-600 transition-all dark:hover:bg-amber-900/20 dark:hover:text-amber-400"
 												title="Editar"
 											>
 												<Edit className="h-4 w-4" />
@@ -475,7 +475,7 @@ export default function CustomersPage() {
 											{customer.status === "inactive" ? (
 												<button
 													onClick={() => handleRestoreClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/30"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
 													title="Restaurar"
 												>
 													<RotateCcw className="h-4 w-4" />
@@ -483,7 +483,7 @@ export default function CustomersPage() {
 											) : (
 												<button
 													onClick={() => handleDeleteClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-[var(--card-foreground)] hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/30"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/20 dark:hover:text-red-400"
 													title="Eliminar"
 												>
 													<Trash2 className="h-4 w-4" />
@@ -535,7 +535,7 @@ export default function CustomersPage() {
 							<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
 								<button
 									onClick={() => handleViewCustomer(customer)}
-									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-medium hover:bg-blue-100 transition-colors dark:bg-blue-900/20 dark:text-blue-400"
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors dark:bg-sky-900/20 dark:text-sky-400"
 								>
 									<Eye className="h-3 w-3" /> Ver
 								</button>
