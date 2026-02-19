@@ -600,7 +600,7 @@ export default function GenerateDeliveryNoteTab() {
 					) : (
 						<Download className="h-4 w-4" />
 					)}
-					{isGenerating ? "Generando..." : "Generar PDF"}
+					{isGenerating ? "Generando..." : "Generar remito"}
 				</button>
 			</div>
 
@@ -614,7 +614,7 @@ export default function GenerateDeliveryNoteTab() {
 						width: dropdownPos.width,
 						zIndex: 9999,
 					}}
-					className="mt-1 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl shadow-xl max-h-60 overflow-y-auto"
+					className="mt-1 bg-[var(--card)] border border-stone-200 dark:border-stone-700 rounded-xl shadow-xl max-h-60 overflow-y-auto"
 				>
 					{filteredSuggestions.map((suggestion, idx) => (
 						<button

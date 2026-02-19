@@ -72,10 +72,10 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 						customerId={customer.id}
 						onSuccess={handlePaymentSuccess}
 					/>
-					<div className="w-px h-8 bg-stone-200 mx-1"></div>
+					<div className="w-px h-8 bg-[var(--border)] mx-1"></div>
 					<button
 						onClick={handleDownload}
-						className="cursor-pointer flex items-center gap-2 px-3 py-2 text-sm font-medium border rounded-xl hover:bg-stone-100 transition-colors bg-white shadow-sm"
+						className="cursor-pointer flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[var(--border)] rounded-xl hover:bg-[var(--secondary)] transition-colors bg-[var(--card)] text-[var(--card-foreground)] shadow-sm"
 					>
 						<Download className="h-4 w-4" />
 						Descargar PDF
@@ -83,10 +83,10 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 				</div>
 			</div>
 
-			<div className="rounded-xl border border-stone-200 bg-white print:border-none print:shadow-none overflow-hidden">
-				<div className="p-6 hidden print:block border-b mb-4">
-					<h1 className="text-2xl font-bold mb-2">Resumen de Cuenta Corriente</h1>
-					<div className="flex justify-between text-sm text-gray-600">
+			<div className="rounded-xl border border-[var(--border)] bg-[var(--card)] print:border-none print:shadow-none overflow-hidden">
+				<div className="p-6 hidden print:block border-b border-[var(--border)] mb-4">
+					<h1 className="text-2xl font-bold mb-2 text-[var(--card-foreground)]">Resumen de Cuenta Corriente</h1>
+					<div className="flex justify-between text-sm text-[var(--muted-foreground)]">
 						<p><strong>Cliente:</strong> {customer.name}</p>
 						<p><strong>Fecha de emisión:</strong> {new Date().toLocaleDateString("es-AR")}</p>
 					</div>
@@ -94,7 +94,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 
 				<div className="overflow-x-auto">
 					<table className="w-full text-sm text-left">
-						<thead className="bg-stone-100 text-stone-600 uppercase text-xs font-bold">
+						<thead className="bg-[var(--muted)] text-[var(--muted-foreground)] uppercase text-xs font-bold">
 							<tr>
 								<th className="px-6 py-4">Fecha de Venta</th>
 								<th className="px-6 py-4">Número de Remito</th>
@@ -105,7 +105,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 								<th className="px-6 py-4 w-24 no-print text-center">Acciones</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-stone-100">
+						<tbody className="divide-y divide-[var(--border)]">
 							{transactions.length > 0 ? (
 								transactions.map((t) => {
 									const isDebit = t.type === 'purchase';
@@ -113,10 +113,10 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 									const creditAmount = !isDebit ? t.amount : 0;
 
 									return (
-										<tr key={t.id} className="hover:bg-stone-50 transition-colors">
-											<td className="px-6 py-4 whitespace-nowrap text-stone-500">{formatDate(t.date)}</td>
-											<td className="px-6 py-4 font-medium text-stone-900">
-												{t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").trim() || "-"}
+										<tr key={t.id} className="hover:bg-[var(--muted)]/50 transition-colors">
+											<td className="px-6 py-4 whitespace-nowrap text-[var(--muted-foreground)]">{formatDate(t.date)}</td>
+											<td className="px-6 py-4 font-medium text-[var(--card-foreground)]">
+												{t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}
 											</td>
 											<td className="px-6 py-4 text-right text-red-600 font-medium whitespace-nowrap">
 												{debitAmount > 0 ? formatCurrency(debitAmount) : "-"}
@@ -124,17 +124,17 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 											<td className="px-6 py-4 text-right text-emerald-600 font-medium whitespace-nowrap">
 												{creditAmount > 0 ? formatCurrency(creditAmount) : "-"}
 											</td>
-											<td className="px-6 py-4 text-right font-bold text-stone-900 whitespace-nowrap">
+											<td className="px-6 py-4 text-right font-bold text-[var(--card-foreground)] whitespace-nowrap">
 												{formatCurrency(t.balance)}
 											</td>
 											<td className="px-6 py-4">
 												<div className="flex items-center gap-2">
 													<span className={`
 														px-2 py-1 rounded-md text-xs font-medium capitalize
-														${t.paymentMethod === 'current_account' ? 'bg-stone-100 text-stone-600' :
-															t.paymentMethod === 'cheque' ? 'bg-amber-100 text-amber-700' :
-																t.paymentMethod === 'transfer' ? 'bg-blue-100 text-blue-700' :
-																	t.paymentMethod === 'cash' ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100'}
+														${t.paymentMethod === 'current_account' ? 'bg-[var(--muted)] text-[var(--muted-foreground)]' :
+															t.paymentMethod === 'cheque' ? 'bg-amber-500/10 text-amber-600' :
+																t.paymentMethod === 'transfer' ? 'bg-blue-500/10 text-blue-600' :
+																	t.paymentMethod === 'cash' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-[var(--muted)]'}
 													`}>
 														{t.paymentMethod === 'current_account' ? 'Cta. Cte.' :
 															t.paymentMethod === 'cheque' ? 'Cheque' :
@@ -183,7 +183,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 												{
 													t.type === 'purchase' && (
 														<div className="flex items-center justify-center gap-1">
-															<a href={`/delivery-notes/${t.documentNumber}`} className="cursor-pointer text-stone-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-50" title="Ver Remito">
+															<a href={`/delivery-notes/${t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}`} className="cursor-pointer text-stone-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-50" title="Ver Remito">
 																<Eye className="h-4 w-4" />
 															</a>
 														</div>
@@ -195,7 +195,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 								})
 							) : (
 								<tr>
-									<td colSpan={7} className="px-6 py-8 text-center text-stone-500">
+									<td colSpan={7} className="px-6 py-8 text-center text-[var(--muted-foreground)]">
 										No hay movimientos registrados
 									</td>
 								</tr>

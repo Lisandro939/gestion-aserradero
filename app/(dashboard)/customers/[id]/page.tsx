@@ -179,14 +179,14 @@ export default function CustomerDetailsPage() {
 			</div>
 
 			{/* Tabs Navigation */}
-			<div className="flex overflow-x-auto border-b border-stone-200 dark:border-stone-800">
+			<div className="flex p-1 bg-[var(--muted)] rounded-xl w-fit max-w-full overflow-x-auto overflow-y-hidden">
 				<button
 					onClick={() => setActiveTab("current-account")}
 					className={cn(
-						"cursor-pointer px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+						"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
 						activeTab === "current-account"
-							? "border-amber-600 text-amber-600"
-							: "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+							? "bg-[var(--card)] text-amber-600 shadow-sm"
+							: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 					)}
 				>
 					Cuenta Corriente
@@ -194,10 +194,10 @@ export default function CustomerDetailsPage() {
 				<button
 					onClick={() => setActiveTab("delivery-notes")}
 					className={cn(
-						"cursor-pointer px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+						"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
 						activeTab === "delivery-notes"
-							? "border-amber-600 text-amber-600"
-							: "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+							? "bg-[var(--card)] text-amber-600 shadow-sm"
+							: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 					)}
 				>
 					Remitos
@@ -205,10 +205,10 @@ export default function CustomerDetailsPage() {
 				<button
 					onClick={() => setActiveTab("invoices")}
 					className={cn(
-						"cursor-pointer px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+						"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
 						activeTab === "invoices"
-							? "border-amber-600 text-amber-600"
-							: "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+							? "bg-[var(--card)] text-amber-600 shadow-sm"
+							: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 					)}
 				>
 					Facturas
@@ -216,10 +216,10 @@ export default function CustomerDetailsPage() {
 				<button
 					onClick={() => setActiveTab("info")}
 					className={cn(
-						"cursor-pointer px-6 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap",
+						"cursor-pointer px-4 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
 						activeTab === "info"
-							? "border-amber-600 text-amber-600"
-							: "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+							? "bg-[var(--card)] text-amber-600 shadow-sm"
+							: "text-[var(--muted-foreground)] hover:text-[var(--card-foreground)]"
 					)}
 				>
 					Información

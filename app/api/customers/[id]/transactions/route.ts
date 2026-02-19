@@ -24,7 +24,7 @@ export async function GET(
 			.from(transactions)
 			.leftJoin(cheques, eq(transactions.id, cheques.transactionId))
 			.where(eq(transactions.customerId, customerId))
-			.orderBy(desc(transactions.date));
+			.orderBy(desc(transactions.id));
 
 		// Convertir centavos a pesos y fechas a timestamps
 		const mappedTransactions = result.map(({ transaction: t, cheque: c }) => ({

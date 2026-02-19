@@ -149,7 +149,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 									<tr key={index} className="border-b border-stone-100 dark:border-stone-800">
 										<td className="py-4 text-sm">{invoice.quoteNumber || "-"}</td>
 										<td className="py-4 text-sm">
-											{new Date(invoice.date).toLocaleDateString("es-AR")}
+											{invoice.date || "-"}
 										</td>
 										<td className="py-4 text-sm">{invoice.customerName || invoice.customer || "Consumidor Final"}</td>
 										<td className="py-4 text-sm">{invoice.city}</td>
@@ -206,7 +206,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 											{invoice.quoteNumber || "-"}
 										</p>
 										<p className="text-xs text-stone-500">
-											{new Date(invoice.date).toLocaleDateString("es-AR")}
+											{invoice.date || "-"}
 										</p>
 									</div>
 									<div className="text-sm font-bold text-[var(--text-primary)]">
