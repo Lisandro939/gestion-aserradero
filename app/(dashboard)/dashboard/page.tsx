@@ -145,7 +145,7 @@ export default function DashboardPage() {
 						Resumen general y métricas clave
 					</p>
 				</div>
-				<div className="flex items-center gap-2 bg-[var(--card)] border border-[var(--border)] dark:bg-[var(--secondary)] p-2 rounded-xl">
+				<div className="flex items-center gap-2 bg-[var(--card)] border border-[var(--border)] p-2 rounded-xl">
 					<Calendar className="h-4 w-4 text-[var(--muted-foreground)]" />
 					<span className="text-xs font-medium text-[var(--card-foreground)]">
 						{new Date().toLocaleDateString("es-AR", { month: 'long', year: 'numeric', day: 'numeric' })}
@@ -162,7 +162,7 @@ export default function DashboardPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: i * 0.1 }}
 						href={stat.href}
-						className="bg-[var(--card)] rounded-2xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden"
+						className="bg-[var(--card)] rounded-2xl p-4 md:p-6 shadow-sm border border-stone-200 group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden"
 					>
 						<div className="mb-3 md:mb-4 flex items-center justify-between relative z-10">
 							<div className={cn("p-2 rounded-xl", stat.bg)}>
@@ -170,7 +170,7 @@ export default function DashboardPage() {
 							</div>
 							<ArrowUpRight className="h-3 w-3 md:h-4 md:w-4 text-stone-400 group-hover:text-amber-500 transition-colors" />
 						</div>
-						<h3 className="text-xs md:text-sm font-medium text-stone-500 dark:text-stone-400 relative z-10">
+						<h3 className="text-xs md:text-sm font-medium text-stone-500 relative z-10">
 							{stat.name}
 						</h3>
 						<div className="mt-1 flex items-baseline gap-2 relative z-10">
@@ -188,7 +188,7 @@ export default function DashboardPage() {
 			{/* Charts Section */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* Sales Chart (2 cols) */}
-				<div className="lg:col-span-2 bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+				<div className="lg:col-span-2 bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
 					<div className="flex items-center justify-between mb-6">
 						<div>
 							<h2 className="text-lg font-bold text-[var(--card-foreground)]">Evolución de Ventas</h2>
@@ -199,12 +199,12 @@ export default function DashboardPage() {
 				</div>
 
 				{/* Quick Actions (1 col) */}
-				<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 flex flex-col">
+				<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 flex flex-col">
 					<h2 className="text-lg font-bold text-[var(--card-foreground)] mb-6">Acciones Rápidas</h2>
 					<div className="space-y-3 flex-1">
 						<a
 							href="/delivery-notes"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 dark:hover:bg-stone-900 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
 						>
 							<div className="flex items-center gap-3">
 								<div className="p-2 rounded-xl bg-amber-100/50">
@@ -220,7 +220,7 @@ export default function DashboardPage() {
 
 						<a
 							href="/invoices"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 dark:hover:bg-stone-900 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
 						>
 							<div className="flex items-center gap-3">
 								<div className="p-2 rounded-xl bg-emerald-100/50">
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
 						<a
 							href="/customers"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 dark:hover:bg-stone-900 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
 						>
 							<div className="flex items-center gap-3">
 								<div className="p-2 rounded-xl bg-blue-100/50">

@@ -133,7 +133,7 @@ export function EditTransactionModal({ transaction, onSuccess, trigger }: EditTr
 		<>
 			<div onClick={handleOpen} className="inline-block cursor-pointer">
 				{trigger || (
-					<button className="cursor-pointer p-2 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-100 transition-colors dark:hover:bg-amber-900/20 dark:hover:text-amber-400" title="Editar">
+					<button className="cursor-pointer p-2 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-100 transition-colors" title="Editar">
 						<Pencil className="h-4 w-4" />
 					</button>
 				)}
@@ -160,7 +160,7 @@ export function EditTransactionModal({ transaction, onSuccess, trigger }: EditTr
 
 						<form onSubmit={handleSubmit} className="p-6 space-y-4">
 							{error && (
-								<div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30">
+								<div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100">
 									{error}
 								</div>
 							)}
@@ -253,7 +253,7 @@ export function EditTransactionModal({ transaction, onSuccess, trigger }: EditTr
 								<button
 									type="submit"
 									disabled={loading}
-									className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors flex items-center gap-2 disabled:opacity-50"
+									className="bg-stone-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-stone-800 transition-colors flex items-center gap-2 disabled:opacity-50"
 								>
 									{loading && <Loader2 className="h-4 w-4 animate-spin" />}
 									Guardar Cambios

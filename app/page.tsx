@@ -20,7 +20,7 @@ export default function RootPage() {
 	}, [isAuthenticated, user, router]);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950">
+		<div className="flex min-h-screen items-center justify-center bg-white">
 			<div className="h-10 w-10 animate-spin rounded-full border-4 border-amber-600 border-t-transparent" />
 		</div>
 	);

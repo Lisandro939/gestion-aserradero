@@ -363,7 +363,7 @@ export default function CustomersPage() {
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200">
 				<div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center md:justify-between">
 					<div className="relative flex-1 md:max-w-md">
 						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
@@ -392,12 +392,12 @@ export default function CustomersPage() {
 			</div>
 
 			{/* Clientes Table */}
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50 overflow-hidden">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-sm border border-stone-200 overflow-hidden">
 				{/* Desktop Table */}
 				<div className="hidden md:block overflow-x-auto -mx-3 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
-							<tr className="border-b border-stone-100 dark:border-stone-800">
+							<tr className="border-b border-stone-100">
 								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">
 									Cliente
 								</th>
@@ -419,11 +419,11 @@ export default function CustomersPage() {
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ delay: index * 0.05 }}
-									className="border-b border-stone-50 dark:border-stone-900 transition-colors"
+									className="border-b border-stone-50 transition-colors"
 								>
 									<td className="py-4">
 										<div className="flex items-center gap-3">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm dark:bg-amber-900/30">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">
 												{customer.name.charAt(0)}
 											</div>
 											<div>
@@ -457,7 +457,7 @@ export default function CustomersPage() {
 										<div className="flex items-center justify-center gap-2">
 											<button
 												onClick={() => handleViewCustomer(customer)}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 hover:text-sky-600 transition-all dark:hover:bg-sky-900/20 dark:hover:text-sky-400"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 hover:text-sky-600 transition-all"
 												title="Ver detalles"
 											>
 												<Eye className="h-4 w-4" />
@@ -467,7 +467,7 @@ export default function CustomersPage() {
 													setSelectedCustomer(customer);
 													setShowModal("edit");
 												}}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-100 hover:text-amber-600 transition-all dark:hover:bg-amber-900/20 dark:hover:text-amber-400"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-100 hover:text-amber-600 transition-all"
 												title="Editar"
 											>
 												<Edit className="h-4 w-4" />
@@ -475,7 +475,7 @@ export default function CustomersPage() {
 											{customer.status === "inactive" ? (
 												<button
 													onClick={() => handleRestoreClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all dark:hover:bg-emerald-900/20 dark:hover:text-emerald-400"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all"
 													title="Restaurar"
 												>
 													<RotateCcw className="h-4 w-4" />
@@ -483,7 +483,7 @@ export default function CustomersPage() {
 											) : (
 												<button
 													onClick={() => handleDeleteClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all dark:hover:bg-red-900/20 dark:hover:text-red-400"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all"
 													title="Eliminar"
 												>
 													<Trash2 className="h-4 w-4" />
@@ -505,10 +505,10 @@ export default function CustomersPage() {
 							initial={{ opacity: 0, y: 10 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: index * 0.05 }}
-							className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 dark:border-stone-800 shadow-sm space-y-4"
+							className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 shadow-sm space-y-4"
 						>
-							<div className="flex items-center gap-3 border-b border-stone-100 dark:border-stone-800 pb-3">
-								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm dark:bg-amber-900/30">
+							<div className="flex items-center gap-3 border-b border-stone-100 pb-3">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">
 									{customer.name.charAt(0)}
 								</div>
 								<div className="min-w-0 flex-1">
@@ -522,20 +522,20 @@ export default function CustomersPage() {
 							</div>
 
 							<div className="space-y-2">
-								<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+								<div className="flex items-center gap-2 text-xs text-stone-600">
 									<Mail className="h-3.5 w-3.5 shrink-0" />
 									<span className="truncate">{customer.email}</span>
 								</div>
-								<div className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+								<div className="flex items-center gap-2 text-xs text-stone-600">
 									<Phone className="h-3.5 w-3.5 shrink-0" />
 									<span className="truncate">{customer.phone}</span>
 								</div>
 							</div>
 
-							<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
+							<div className="flex justify-end gap-2 pt-2 border-t border-stone-100">
 								<button
 									onClick={() => handleViewCustomer(customer)}
-									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors dark:bg-sky-900/20 dark:text-sky-400"
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors"
 								>
 									<Eye className="h-3 w-3" /> Ver
 								</button>
@@ -544,21 +544,21 @@ export default function CustomersPage() {
 										setSelectedCustomer(customer);
 										setShowModal("edit");
 									}}
-									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors dark:bg-amber-900/20 dark:text-amber-400"
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors"
 								>
 									<Edit className="h-3 w-3" /> Editar
 								</button>
 								{customer.status === "inactive" ? (
 									<button
 										onClick={() => handleRestoreClick(customer.id)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition-colors dark:bg-emerald-900/20 dark:text-emerald-400"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition-colors"
 									>
 										<RotateCcw className="h-3 w-3" /> Restaurar
 									</button>
 								) : (
 									<button
 										onClick={() => handleDeleteClick(customer.id)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors dark:bg-red-900/20 dark:text-red-400"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
 									>
 										<Trash2 className="h-3 w-3" /> Eliminar
 									</button>
@@ -570,7 +570,7 @@ export default function CustomersPage() {
 
 				{filteredCustomers.length === 0 && (
 					<div className="text-center py-12">
-						<Search className="h-12 w-12 text-stone-300 dark:text-stone-700 mx-auto mb-4" />
+						<Search className="h-12 w-12 text-stone-300 mx-auto mb-4" />
 						<p className="text-stone-500">
 							No se encontraron clientes con los filtros aplicados
 						</p>
@@ -595,9 +595,9 @@ export default function CustomersPage() {
 							onClick={(e) => e.stopPropagation()}
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
 						>
-							<div className="flex items-center justify-between p-6 border-b border-stone-200 dark:border-stone-800">
+							<div className="flex items-center justify-between p-6 border-b border-stone-200">
 								<div className="flex items-center gap-4">
-									<div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-xl dark:bg-amber-900/30">
+									<div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-xl">
 										{selectedCustomer.name.charAt(0)}
 									</div>
 									<div>
@@ -609,7 +609,7 @@ export default function CustomersPage() {
 								</div>
 								<button
 									onClick={() => setShowModal(null)}
-									className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+									className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
 								>
 									<X className="h-5 w-5" />
 								</button>
@@ -637,7 +637,7 @@ export default function CustomersPage() {
 										</div>
 									</div>
 									{transactions.length > 0 && (
-										<div className="pt-4 border-t border-stone-200 dark:border-stone-800">
+										<div className="pt-4 border-t border-stone-200">
 											<h3 className="text-sm font-bold text-stone-400 uppercase mb-4">
 												Historial de Movimientos
 											</h3>
@@ -645,7 +645,7 @@ export default function CustomersPage() {
 												{transactions.map((t) => (
 													<div
 														key={t.id}
-														className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-white/50 dark:border-stone-800 dark:bg-stone-900/50"
+														className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-white/50"
 													>
 														<div>
 															<p className="text-sm font-bold">{t.concept}</p>
@@ -694,13 +694,13 @@ export default function CustomersPage() {
 							onClick={(e) => e.stopPropagation()}
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden"
 						>
-							<div className="flex items-center justify-between p-6 border-b border-stone-200 dark:border-stone-800">
+							<div className="flex items-center justify-between p-6 border-b border-stone-200">
 								<h2 className="text-xl font-bold text-[var(--card-foreground)]">
 									Nuevo cliente
 								</h2>
 								<button
 									onClick={() => setShowModal(null)}
-									className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+									className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
 								>
 									<X className="h-5 w-5" />
 								</button>
@@ -715,7 +715,7 @@ export default function CustomersPage() {
 											name="name"
 											value={formData.name}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -727,7 +727,7 @@ export default function CustomersPage() {
 												name="email"
 												value={formData.email}
 												onChange={handleInputChange}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 												required
 											/>
 										</div>
@@ -738,7 +738,7 @@ export default function CustomersPage() {
 												name="phone"
 												value={formData.phone}
 												onChange={handleInputChange}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 												required
 											/>
 										</div>
@@ -750,7 +750,7 @@ export default function CustomersPage() {
 											name="address"
 											value={formData.address}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -761,7 +761,7 @@ export default function CustomersPage() {
 											name="cuit"
 											value={formData.cuit}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -770,7 +770,7 @@ export default function CustomersPage() {
 										<button
 											type="button"
 											onClick={() => setShowModal(null)}
-											className="cursor-pointer flex-1 rounded-xl py-3 text-sm font-bold text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+											className="cursor-pointer flex-1 rounded-xl py-3 text-sm font-bold text-stone-500 hover:bg-stone-100 transition-colors"
 										>
 											Cancelar
 										</button>
@@ -803,13 +803,13 @@ export default function CustomersPage() {
 							onClick={(e) => e.stopPropagation()}
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden"
 						>
-							<div className="flex items-center justify-between p-6 border-b border-stone-200 dark:border-stone-800">
+							<div className="flex items-center justify-between p-6 border-b border-stone-200">
 								<h2 className="text-xl font-bold text-[var(--card-foreground)]">
 									Editar Cliente
 								</h2>
 								<button
 									onClick={() => setShowModal(null)}
-									className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+									className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
 								>
 									<X className="h-5 w-5" />
 								</button>
@@ -824,7 +824,7 @@ export default function CustomersPage() {
 											name="name"
 											value={formData.name}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -836,7 +836,7 @@ export default function CustomersPage() {
 												name="email"
 												value={formData.email}
 												onChange={handleInputChange}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 												required
 											/>
 										</div>
@@ -847,7 +847,7 @@ export default function CustomersPage() {
 												name="phone"
 												value={formData.phone}
 												onChange={handleInputChange}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 												required
 											/>
 										</div>
@@ -859,7 +859,7 @@ export default function CustomersPage() {
 											name="address"
 											value={formData.address}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -870,7 +870,7 @@ export default function CustomersPage() {
 											name="cuit"
 											value={formData.cuit}
 											onChange={handleInputChange}
-											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+											className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 											required
 										/>
 									</div>
@@ -879,7 +879,7 @@ export default function CustomersPage() {
 										<button
 											type="button"
 											onClick={() => setShowModal(null)}
-											className="cursor-pointer flex-1 rounded-xl py-3 text-sm font-bold text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+											className="cursor-pointer flex-1 rounded-xl py-3 text-sm font-bold text-stone-500 hover:bg-stone-100 transition-colors"
 										>
 											Cancelar
 										</button>
@@ -914,20 +914,20 @@ export default function CustomersPage() {
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden flex flex-col"
 						>
 							<div className="p-6 text-center">
-								<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/30">
+								<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-600">
 									<Trash2 className="h-8 w-8" />
 								</div>
 								<h2 className="mb-2 text-lg font-bold text-[var(--card-foreground)]">
 									¿Eliminar cliente?
 								</h2>
-								<p className="text-sm text-stone-500 dark:text-stone-400">
+								<p className="text-sm text-stone-500">
 									El cliente será marcado como inactivo. No se perderá su historial.
 								</p>
 							</div>
-							<div className="flex border-t border-stone-100 bg-stone-50 p-4 gap-3 dark:border-stone-800 dark:bg-stone-900/50">
+							<div className="flex border-t border-stone-100 bg-stone-50 p-4 gap-3">
 								<button
 									onClick={() => setShowModal(null)}
-									className="flex-1 cursor-pointer rounded-xl bg-white border border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 transition-colors dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
+									className="flex-1 cursor-pointer rounded-xl bg-white border border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 transition-colors"
 								>
 									Cancelar
 								</button>
@@ -959,20 +959,20 @@ export default function CustomersPage() {
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden flex flex-col"
 						>
 							<div className="p-6 text-center">
-								<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30">
+								<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
 									<RotateCcw className="h-8 w-8" />
 								</div>
 								<h2 className="mb-2 text-lg font-bold text-[var(--card-foreground)]">
 									¿Restaurar cliente?
 								</h2>
-								<p className="text-sm text-stone-500 dark:text-stone-400">
+								<p className="text-sm text-stone-500">
 									El cliente volverá a estar activo y visible en la lista principal.
 								</p>
 							</div>
-							<div className="flex border-t border-stone-100 bg-stone-50 p-4 gap-3 dark:border-stone-800 dark:bg-stone-900/50">
+							<div className="flex border-t border-stone-100 bg-stone-50 p-4 gap-3">
 								<button
 									onClick={() => setShowModal(null)}
-									className="flex-1 cursor-pointer rounded-xl bg-white border border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 transition-colors dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-700"
+									className="flex-1 cursor-pointer rounded-xl bg-white border border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 transition-colors"
 								>
 									Cancelar
 								</button>

@@ -54,7 +54,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 			{/* Sidebar */}
 			<aside
 				className={cn(
-					"fixed left-0 top-0 z-50 h-screen w-72 border-r border-stone-200 bg-[var(--background)] dark:border-stone-800 transition-transform duration-300 ease-in-out",
+					"fixed left-0 top-0 z-50 h-screen w-72 border-r border-stone-200 bg-[var(--background)] transition-transform duration-300 ease-in-out",
 					"lg:translate-x-0",
 					isOpen ? "translate-x-0" : "-translate-x-full"
 				)}
@@ -116,7 +116,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 					<div className="mt-auto space-y-4 pt-6">
 						<button
 							onClick={() => dispatch(logout())}
-							className="cursor-pointer flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 transition-all hover:bg-red-50 dark:hover:bg-red-900/10"
+							className="cursor-pointer flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 transition-all hover:bg-red-50"
 						>
 							<LogOut className="h-5 w-5" />
 							Cerrar Sesión

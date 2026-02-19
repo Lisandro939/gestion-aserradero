@@ -194,7 +194,7 @@ export default function DeliveryNoteDetailPage() {
 												{note.items?.map((item: any, i: number) => (
 													<tr key={i} className="hover:bg-[var(--muted)]/50">
 														<td className="py-3 px-4">{item.detail || item.description}</td>
-														<td className="py-3 px-4 text-right font-medium text-stone-600 dark:text-stone-400">
+														<td className="py-3 px-4 text-right font-medium text-stone-600">
 															{item.unitPrice ? item.unitPrice.toLocaleString("es-AR", { style: "currency", currency: "ARS" }) : "-"}
 														</td>
 														<td className="py-3 px-4 text-center font-bold text-[var(--card-foreground)]">{item.quantity}</td>

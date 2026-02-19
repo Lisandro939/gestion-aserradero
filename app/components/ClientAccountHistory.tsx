@@ -167,7 +167,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 															<ChequeDetails
 																cheque={t.cheque}
 																trigger={
-																	<button className="cursor-pointer text-stone-400 hover:text-amber-600 transition-colors p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/20 dark:hover:text-amber-400" title="Ver Cheque">
+																	<button className="cursor-pointer text-stone-400 hover:text-amber-600 transition-colors p-2 rounded-lg hover:bg-amber-100" title="Ver Cheque">
 																		<CreditCard className="h-4 w-4" />
 																	</button>
 																}
@@ -203,7 +203,7 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 												{
 													t.type === 'purchase' && (
 														<div className="flex items-center justify-center gap-1">
-															<a href={`/delivery-notes/${t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}`} className="cursor-pointer text-stone-400 hover:text-sky-600 transition-colors p-2 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/20 dark:hover:text-sky-400" title="Ver Remito">
+															<a href={`/delivery-notes/${t.documentNumber?.replace(/^Remito\s*#?\s*/i, "").replace(/^\d+-/, "").trim() || "-"}`} className="cursor-pointer text-stone-400 hover:text-sky-600 transition-colors p-2 rounded-lg hover:bg-sky-100" title="Ver Remito">
 																<Eye className="h-4 w-4" />
 															</a>
 														</div>

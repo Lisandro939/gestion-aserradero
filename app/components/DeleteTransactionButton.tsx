@@ -40,7 +40,7 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 		<>
 			<button
 				onClick={() => setIsOpen(true)}
-				className="cursor-pointer p-2 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-100 transition-colors dark:hover:bg-red-900/20 dark:hover:text-red-400"
+				className="cursor-pointer p-2 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-100 transition-colors"
 				title="Eliminar"
 			>
 				<Trash2 className="h-4 w-4" />
@@ -56,7 +56,7 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 						onClick={(e) => e.stopPropagation()}
 					>
 						<div className="flex flex-col items-center text-center gap-2">
-							<div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
+							<div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
 								<AlertTriangle className="h-6 w-6" />
 							</div>
 							<h3 className="font-bold text-lg text-[var(--card-foreground)]">¿Eliminar Transacción?</h3>

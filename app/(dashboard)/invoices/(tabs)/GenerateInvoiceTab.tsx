@@ -291,9 +291,9 @@ export default function GenerateInvoiceTab() {
 			<div className="grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 lg:grid-cols-2">
 				{/* Document Information */}
 				<div className="space-y-4 md:space-y-6 lg:space-y-8">
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs text-amber-600 dark:bg-amber-900/30">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs text-amber-600">
 								<FileText className="h-4 w-4" />
 							</div>
 							Información del Documento
@@ -307,7 +307,7 @@ export default function GenerateInvoiceTab() {
 									name="salePoint"
 									value={formData.salePoint}
 									onChange={handleChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 								>
 									<option value="001">001</option>
 									<option value="002">002</option>
@@ -323,7 +323,7 @@ export default function GenerateInvoiceTab() {
 									value={formData.budgetNumber}
 									onChange={handleChange}
 									placeholder="00000000"
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 								/>
 							</div>
 							<div>
@@ -335,16 +335,16 @@ export default function GenerateInvoiceTab() {
 									name="date"
 									value={formData.date}
 									onChange={handleChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 								/>
 							</div>
 						</div>
 					</section>
 
 					{/* Customer Information */}
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-xs text-blue-600 dark:bg-blue-900/30">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-xs text-blue-600">
 								<User className="h-4 w-4" />
 							</div>
 							Información del Cliente
@@ -357,7 +357,7 @@ export default function GenerateInvoiceTab() {
 								</label>
 								<select
 									onChange={handleCustomerSelect}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 									defaultValue=""
 								>
 									<option value="" disabled>Seleccione un cliente</option>
@@ -379,7 +379,7 @@ export default function GenerateInvoiceTab() {
 									value={formData.address}
 									readOnly
 									placeholder="Dirección completa"
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
 								/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
@@ -392,7 +392,7 @@ export default function GenerateInvoiceTab() {
 										name="city"
 										value={formData.city}
 										onChange={handleChange}
-										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 									/>
 								</div>
 								<div>
@@ -405,7 +405,7 @@ export default function GenerateInvoiceTab() {
 										name="phone"
 										value={formData.phone}
 										readOnly
-										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed dark:border-stone-800 text-stone-500"
+										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
 									/>
 								</div>
 							</div>
@@ -415,9 +415,9 @@ export default function GenerateInvoiceTab() {
 
 				{/* Additional Information */}
 				<div className="space-y-4 md:space-y-6 lg:space-y-8">
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs text-emerald-600 dark:bg-emerald-900/30">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs text-emerald-600">
 								3
 							</div>
 							Información Adicional
@@ -434,7 +434,7 @@ export default function GenerateInvoiceTab() {
 										value={formData.movementType}
 										onChange={handleChange}
 										placeholder="00000"
-										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 									/>
 								</div>
 								<div>
@@ -446,7 +446,7 @@ export default function GenerateInvoiceTab() {
 										name="salesperson"
 										value={formData.salesperson}
 										onChange={handleChange}
-										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 dark:border-stone-800"
+										className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
 									/>
 								</div>
 							</div>
@@ -459,7 +459,7 @@ export default function GenerateInvoiceTab() {
 									value={formData.notes}
 									onChange={handleChange}
 									rows={4}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 resize-none dark:border-stone-800"
+									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 resize-none"
 								/>
 							</div>
 						</div>
@@ -468,10 +468,10 @@ export default function GenerateInvoiceTab() {
 			</div>
 
 			{/* Items Table */}
-			<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+			<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
 				<div className="mb-6 flex items-center justify-between">
 					<h2 className="flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-						<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-xs text-purple-600 dark:bg-purple-900/30">
+						<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-xs text-purple-600">
 							<ClipboardList className="h-4 w-4" />
 						</div>
 						Detalle de Items
@@ -481,7 +481,7 @@ export default function GenerateInvoiceTab() {
 				<div className="overflow-x-auto">
 					<table className="w-full text-left">
 						<thead>
-							<tr className="border-b border-neutral-100 text-[10px] font-bold uppercase tracking-wider text-stone-400 dark:border-neutral-800">
+							<tr className="border-b border-neutral-100 text-[10px] font-bold uppercase tracking-wider text-stone-400">
 								<th className="py-3 pl-2 md:w-[5vw] text-center">Cantidad</th>
 								<th className="py-3 px-4 min-w-[75vw] md:min-w-[30vw]">Descripción</th>
 								<th className="py-3 px-4 md:w-[5vw] text-center">Cód.</th>
@@ -491,7 +491,7 @@ export default function GenerateInvoiceTab() {
 								<th className="py-3 pr-4 w-12 text-center">Acción</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+						<tbody className="divide-y divide-neutral-100">
 							{formData.items.map((item, index) => (
 								<tr key={index}>
 									<td className="py-2 pl-2">
@@ -586,7 +586,7 @@ export default function GenerateInvoiceTab() {
 										<button
 											onClick={() => removeItem(index)}
 											disabled={formData.items.length <= 1}
-											className="cursor-pointer rounded-lg p-2 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 disabled:opacity-20"
+											className="cursor-pointer rounded-lg p-2 text-red-400 hover:bg-red-50 disabled:opacity-20"
 										>
 											<Trash2 className="h-4 w-4" />
 										</button>
@@ -613,7 +613,7 @@ export default function GenerateInvoiceTab() {
 
 				<button
 					onClick={addItem}
-					className="cursor-pointer mt-4 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-2 text-sm font-bold text-stone-600 transition-all hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+					className="cursor-pointer mt-4 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-2 text-sm font-bold text-stone-600 transition-all hover:bg-stone-200"
 				>
 					<Plus className="h-4 w-4" />
 					Agregar Item
@@ -645,7 +645,7 @@ export default function GenerateInvoiceTab() {
 						width: dropdownPos.width,
 						zIndex: 9999,
 					}}
-					className="mt-1 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl shadow-xl max-h-60 overflow-y-auto"
+					className="mt-1 bg-white border border-stone-200 rounded-xl shadow-xl max-h-60 overflow-y-auto"
 				>
 					{filteredSuggestions.map((suggestion, idx) => (
 						<button
@@ -655,7 +655,7 @@ export default function GenerateInvoiceTab() {
 								e.preventDefault();
 								selectSuggestion(activeInputIndex, suggestion);
 							}}
-							className="w-full text-left px-3 py-2 text-sm hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors first:rounded-t-xl last:rounded-b-xl"
+							className="w-full text-left px-3 py-2 text-sm hover:bg-amber-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
 						>
 							{suggestion}
 						</button>
@@ -666,19 +666,19 @@ export default function GenerateInvoiceTab() {
 			{/* Success Modal */}
 			{showSuccessModal && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-					<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
-						<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30">
+					<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-stone-200">
+						<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
 							<FileText className="h-6 w-6" />
 						</div>
-						<h3 className="mb-2 text-lg font-bold text-stone-800 dark:text-stone-100">
+						<h3 className="mb-2 text-lg font-bold text-stone-800">
 							¡Factura Generada!
 						</h3>
-						<p className="mb-6 text-sm text-stone-500 dark:text-stone-400">
+						<p className="mb-6 text-sm text-stone-500">
 							La factura se ha guardado correctamente en la base de datos y el PDF ha sido descargado.
 						</p>
 						<button
 							onClick={() => setShowSuccessModal(false)}
-							className="cursor-pointer w-full rounded-xl bg-stone-900 py-3 text-sm font-bold text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+							className="cursor-pointer w-full rounded-xl bg-stone-900 py-3 text-sm font-bold text-white transition-colors hover:bg-stone-800"
 						>
 							Aceptar
 						</button>

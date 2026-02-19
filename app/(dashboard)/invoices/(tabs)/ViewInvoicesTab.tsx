@@ -98,7 +98,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 	return (
 		<div className="space-y-4">
 			{/* Search and Filter Bar */}
-			<div className="bg-[var(--card)] rounded-2xl p-4 flex gap-4 items-center shadow-sm border border-stone-200 dark:border-stone-800/50">
+			<div className="bg-[var(--card)] rounded-2xl p-4 flex gap-4 items-center shadow-sm border border-stone-200">
 				<div className="relative flex-1">
 					<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
 					<input
@@ -106,7 +106,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 						placeholder="Buscar por número, cliente o localidad..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-full rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
+						className="w-full rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
 					/>
 				</div>
 				<div className="relative">
@@ -114,7 +114,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 					<select
 						value={filterStatus}
 						onChange={(e) => setFilterStatus(e.target.value as "active" | "inactive")}
-						className="appearance-none rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 dark:border-stone-800 dark:focus:ring-amber-500/20"
+						className="appearance-none rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
 					>
 						<option value="active">Activas</option>
 						<option value="inactive">Bajas</option>
@@ -122,13 +122,13 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 				</div>
 			</div>
 
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200 dark:border-stone-800/50">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200">
 
 				{/* Desktop View: Table */}
 				<div className="hidden md:block overflow-x-auto -mx-4 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
-							<tr className="border-b border-stone-100 dark:border-stone-800">
+							<tr className="border-b border-stone-100">
 								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">N° Presupuesto</th>
 								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Fecha</th>
 								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Cliente</th>
@@ -146,7 +146,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 								</tr>
 							) : (
 								filteredInvoices.map((invoice, index) => (
-									<tr key={index} className="border-b border-stone-100 dark:border-stone-800">
+									<tr key={index} className="border-b border-stone-100">
 										<td className="py-4 text-sm">{invoice.quoteNumber || "-"}</td>
 										<td className="py-4 text-sm">
 											{invoice.date || "-"}
@@ -168,7 +168,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 												{filterStatus === "active" ? (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "delete", invoiceId: invoice.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-50 hover:text-red-500 transition-all dark:hover:bg-red-900/10"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-50 hover:text-red-500 transition-all"
 														title="Dar de baja"
 													>
 														<Trash2 className="h-4 w-4" />
@@ -176,7 +176,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 												) : (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "restore", invoiceId: invoice.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-green-50 hover:text-green-500 transition-all dark:hover:bg-green-900/10"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-green-50 hover:text-green-500 transition-all"
 														title="Restaurar"
 													>
 														<RotateCcw className="h-4 w-4" />
@@ -199,7 +199,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 						</div>
 					) : (
 						filteredInvoices.map((invoice, index) => (
-							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 dark:border-stone-800 shadow-sm space-y-3">
+							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 shadow-sm space-y-3">
 								<div className="flex justify-between items-start">
 									<div>
 										<p className="text-sm font-bold text-[var(--text-primary)]">
@@ -223,7 +223,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 									</p>
 								</div>
 
-								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100 dark:border-stone-800">
+								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100">
 									<button
 										onClick={() => handleViewInvoice(invoice)}
 										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors"
@@ -255,17 +255,17 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 			    or could be lifted up if shared across tabs, but here it is contained) */}
 				{confirmModal.isOpen && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-						<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
-							<h3 className="mb-2 text-lg font-bold text-stone-800 dark:text-stone-100">
+						<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-stone-200">
+							<h3 className="mb-2 text-lg font-bold text-stone-800">
 								{confirmModal.type === "delete" ? "Dar de baja factura" : "Restaurar factura"}
 							</h3>
-							<p className="mb-6 text-sm text-stone-500 dark:text-stone-400">
+							<p className="mb-6 text-sm text-stone-500">
 								¿Estás seguro de que deseas realizar esta acción?
 							</p>
 							<div className="flex gap-3">
 								<button
 									onClick={() => setConfirmModal({ isOpen: false, type: null, invoiceId: null })}
-									className="cursor-pointer flex-1 rounded-xl bg-stone-100 py-3 text-sm font-bold text-stone-600 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+									className="cursor-pointer flex-1 rounded-xl bg-stone-100 py-3 text-sm font-bold text-stone-600 transition-colors hover:bg-stone-200"
 								>
 									Cancelar
 								</button>
