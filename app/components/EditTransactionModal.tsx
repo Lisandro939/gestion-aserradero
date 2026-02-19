@@ -27,9 +27,15 @@ export function EditTransactionModal({ transaction, onSuccess, trigger }: EditTr
 
 	const [amount, setAmount] = useState(transaction.amount.toString());
 	const [description, setDescription] = useState(transaction.description);
-	const [date, setDate] = useState(
-		transaction.date ? new Date(transaction.date).toISOString().split('T')[0] : ""
-	);
+	const [date, setDate] = useState(() => {
+		if (!transaction.date) return "";
+		// Use local time, not UTC (toISOString)
+		const d = new Date(transaction.date);
+		const year = d.getFullYear();
+		const month = String(d.getMonth() + 1).padStart(2, "0");
+		const day = String(d.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	});
 	const [documentNumber, setDocumentNumber] = useState(transaction.documentNumber || "");
 
 	const [deliveryNotes, setDeliveryNotes] = useState<any[]>([]);
@@ -73,11 +79,33 @@ export function EditTransactionModal({ transaction, onSuccess, trigger }: EditTr
 		setLoading(true);
 
 		try {
+			// Create date object in local timezone to avoid UTC shifting
+			// Create date object in local timezone to avoid UTC shifting
+			let timestamp;
+			if (date) {
+				const [year, month, day] = date.split('-').map(Number);
+
+				// Check if the date part is the same as the original transaction date
+				const originalDate = transaction.date ? new Date(transaction.date) : null;
+				const isSameDay = originalDate &&
+					originalDate.getFullYear() === year &&
+					originalDate.getMonth() === month - 1 &&
+					originalDate.getDate() === day;
+
+				if (isSameDay && originalDate) {
+					// Preserve the original time if only "saving without changes" or keeping same day
+					timestamp = originalDate.getTime();
+				} else {
+					// New date, set to midnight local time
+					timestamp = new Date(year, month - 1, day).getTime();
+				}
+			}
+
 			const payload = {
 				amount: parseFloat(amount),
 				description,
 				documentNumber,
-				date: date ? new Date(date).getTime() : undefined,
+				date: timestamp,
 			};
 
 			const res = await fetch(`/api/transactions/${transaction.id}`, {

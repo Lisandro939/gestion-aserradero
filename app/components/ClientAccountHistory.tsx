@@ -65,8 +65,12 @@ export function ClientAccountHistory({ transactions, customer, refreshData }: Cl
 
 	// Calculate running balance dynamically
 	const processedTransactions = useMemo(() => {
-		// Sort by date ascending to calculate running balance
-		const sorted = [...transactions].sort((a, b) => (a.date || 0) - (b.date || 0));
+		// Sort by date ascending (and by ID if dates are equal) to calculate running balance correctly
+		const sorted = [...transactions].sort((a, b) => {
+			const dateDiff = (a.date || 0) - (b.date || 0);
+			if (dateDiff !== 0) return dateDiff;
+			return a.id - b.id; // Second criterion: ID
+		});
 
 		let runningBalance = 0;
 		const withBalance = sorted.map(t => {

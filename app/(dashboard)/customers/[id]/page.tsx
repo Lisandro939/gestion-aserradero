@@ -36,24 +36,29 @@ export default function CustomerDetailsPage() {
 	const [invoices, setInvoices] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 
-	const fetchData = useCallback(async () => {
+	const fetchData = useCallback(async (signal?: AbortSignal) => {
 		try {
+			// Don't set loading to true here if we want to avoid flicker on strict mode re-runs?
+			// But we need it for initial load.
+			// Let's keep it, but maybe check signal first.
+			if (signal?.aborted) return;
 			setLoading(true);
+
 			// 1. Fetch Customer
-			const customerRes = await fetch(`/api/customers/${id}`);
+			const customerRes = await fetch(`/api/customers/${id}`, { signal });
 			if (!customerRes.ok) throw new Error("Customer not found");
 			const customerData = await customerRes.json();
 			setCustomer(customerData);
 
 			// 2. Fetch Transactions
-			const transactionsRes = await fetch(`/api/customers/${id}/transactions`);
+			const transactionsRes = await fetch(`/api/customers/${id}/transactions`, { signal });
 			if (transactionsRes.ok) {
 				const transactionsData = await transactionsRes.json();
 				setTransactions(transactionsData);
 			}
 
 			// 3. Fetch Delivery Notes (Filter by ID)
-			const notesRes = await fetch("/api/delivery-notes");
+			const notesRes = await fetch("/api/delivery-notes", { signal });
 			if (notesRes.ok) {
 				const notesData = await notesRes.json();
 				const filteredNotes = notesData.data.filter(
@@ -63,7 +68,7 @@ export default function CustomerDetailsPage() {
 			}
 
 			// 4. Fetch Invoices (Filter by Name - Fallback)
-			const invoicesRes = await fetch("/api/invoices");
+			const invoicesRes = await fetch("/api/invoices", { signal });
 			if (invoicesRes.ok) {
 				const invoicesData = await invoicesRes.json();
 				// Normalize for comparison
@@ -75,15 +80,24 @@ export default function CustomerDetailsPage() {
 				);
 				setInvoices(filteredInvoices);
 			}
-		} catch (error) {
+		} catch (error: any) {
+			if (error.name === "AbortError") {
+				// Request cancelled, ignore
+				return;
+			}
 			console.error("Error fetching data:", error);
 		} finally {
-			setLoading(false);
+			if (!signal?.aborted) {
+				setLoading(false);
+			}
 		}
 	}, [id]);
 
 	useEffect(() => {
-		if (id) fetchData();
+		if (!id) return;
+		const controller = new AbortController();
+		fetchData(controller.signal);
+		return () => controller.abort();
 	}, [id, fetchData]);
 
 	const [activeTab, setActiveTab] = useState("current-account");
