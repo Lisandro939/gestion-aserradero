@@ -48,19 +48,19 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 
 			{isOpen && (
 				<div
-					className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+					className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
 					onClick={() => setIsOpen(false)}
 				>
 					<div
-						className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200"
+						className="bg-[var(--card)] text-[var(--card-foreground)] rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200 border border-[var(--border)]"
 						onClick={(e) => e.stopPropagation()}
 					>
 						<div className="flex flex-col items-center text-center gap-2">
-							<div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+							<div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400">
 								<AlertTriangle className="h-6 w-6" />
 							</div>
-							<h3 className="font-bold text-lg text-stone-900">¿Eliminar Transacción?</h3>
-							<p className="text-sm text-stone-500">
+							<h3 className="font-bold text-lg text-[var(--card-foreground)]">¿Eliminar Transacción?</h3>
+							<p className="text-sm text-[var(--muted-foreground)]">
 								Esta acción revertirá el saldo de la cuenta corriente. El registro quedará marcado como eliminado.
 							</p>
 						</div>
@@ -68,7 +68,7 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 						<div className="flex gap-3 pt-2">
 							<button
 								onClick={() => setIsOpen(false)}
-								className="flex-1 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+								className="cursor-pointer flex-1 py-2.5 text-sm font-medium text-[var(--card-foreground)] hover:bg-[var(--secondary-card)] rounded-lg transition-colors"
 								disabled={loading}
 							>
 								Cancelar
@@ -76,7 +76,7 @@ export function DeleteTransactionButton({ transactionId, onSuccess }: DeleteTran
 							<button
 								onClick={handleDelete}
 								disabled={loading}
-								className="flex-1 bg-red-600 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-red-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+								className="cursor-pointer flex-1 bg-red-600 text-white py-2.5 rounded-lg text-sm font-bold hover:bg-red-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
 							>
 								{loading && <Loader2 className="h-4 w-4 animate-spin" />}
 								Eliminar
