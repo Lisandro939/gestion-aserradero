@@ -20,7 +20,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
 				{/* Hamburger Menu Button - Mobile Only */}
 				<button
 					onClick={onMenuClick}
-					className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--card)] text-stone-600 transition-all hover:bg-stone-200 border border-stone-200 lg:hidden"
+					className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--card)] text-foreground transition-all hover:bg-secondary-card border border-border lg:hidden"
 				>
 					<Menu className="h-5 w-5" />
 				</button>
@@ -32,7 +32,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
 					onClick={() =>
 						setTheme(theme === "dark" ? "light" : "dark")
 					}
-					className="cursor-pointer flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl md:rounded-2xl bg-[var(--card)] text-stone-600 transition-all hover:bg-stone-200 border border-stone-200"
+					className="cursor-pointer flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl md:rounded-2xl bg-[var(--card)] text-foreground transition-all hover:bg-secondary-card border border-border"
 				>
 					{theme === "dark" ? (
 						<Sun className="h-4 w-4 md:h-5 md:w-5" />

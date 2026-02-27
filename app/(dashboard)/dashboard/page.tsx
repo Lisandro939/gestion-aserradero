@@ -267,7 +267,7 @@ export default function DashboardPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ delay: i * 0.1 }}
 						href={stat.href}
-						className="bg-[var(--card)] rounded-2xl p-4 md:p-6 shadow-sm border border-stone-200 group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden"
+						className="bg-[var(--card)] rounded-2xl p-4 md:p-6 shadow-sm border border-border group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden"
 					>
 						<div className="mb-3 md:mb-4 flex items-center justify-between relative z-10">
 							<div className={cn("p-2 rounded-xl", stat.bg)}>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
 			{/* Charts Section */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* Sales Chart (2 cols) */}
-				<div className="lg:col-span-2 bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+				<div className="lg:col-span-2 bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border">
 					<div className="flex items-center justify-between mb-6">
 						<div>
 							<h2 className="text-lg font-bold text-[var(--card-foreground)]">Evolución de Ventas</h2>
@@ -304,55 +304,55 @@ export default function DashboardPage() {
 				</div>
 
 				{/* Quick Actions (1 col) */}
-				<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 flex flex-col">
+				<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border flex flex-col">
 					<h2 className="text-lg font-bold text-[var(--card-foreground)] mb-6">Acciones Rápidas</h2>
 					<div className="space-y-3 flex-1">
 						<a
 							href="/delivery-notes"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-border bg-[var(--card)] hover:bg-[var(--secondary-card)] transition-all group"
 						>
 							<div className="flex items-center gap-3">
-								<div className="p-2 rounded-xl bg-amber-100/50">
-									<Package className="h-5 w-5 text-amber-600" />
+								<div className="p-2 rounded-xl bg-amber-100/50 dark:bg-amber-500/10">
+									<Package className="h-5 w-5 text-amber-600 dark:text-amber-500" />
 								</div>
 								<div>
 									<p className="text-sm font-bold text-[var(--card-foreground)]">Nuevo Remito</p>
 									<p className="text-xs text-stone-500">Registrar entrega</p>
 								</div>
 							</div>
-							<ArrowUpRight className="h-4 w-4 text-stone-300 group-hover:text-amber-500 transition-colors" />
+							<ArrowUpRight className="h-4 w-4 text-stone-300 dark:text-stone-600 group-hover:text-amber-500 transition-colors" />
 						</a>
 
 						<a
 							href="/invoices"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-border bg-[var(--card)] hover:bg-[var(--secondary-card)] transition-all group"
 						>
 							<div className="flex items-center gap-3">
-								<div className="p-2 rounded-xl bg-emerald-100/50">
-									<DollarSign className="h-5 w-5 text-emerald-600" />
+								<div className="p-2 rounded-xl bg-emerald-100/50 dark:bg-emerald-500/10">
+									<DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-500" />
 								</div>
 								<div>
 									<p className="text-sm font-bold text-[var(--card-foreground)]">Nueva Factura</p>
 									<p className="text-xs text-stone-500">Emitir comprobante</p>
 								</div>
 							</div>
-							<ArrowUpRight className="h-4 w-4 text-stone-300 group-hover:text-emerald-500 transition-colors" />
+							<ArrowUpRight className="h-4 w-4 text-stone-300 dark:text-stone-600 group-hover:text-emerald-500 transition-colors" />
 						</a>
 
 						<a
 							href="/customers"
-							className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)] hover:bg-stone-50 transition-all group"
+							className="flex items-center justify-between p-4 rounded-2xl border border-border bg-[var(--card)] hover:bg-[var(--secondary-card)] transition-all group"
 						>
 							<div className="flex items-center gap-3">
-								<div className="p-2 rounded-xl bg-blue-100/50">
-									<Users className="h-5 w-5 text-blue-600" />
+								<div className="p-2 rounded-xl bg-blue-100/50 dark:bg-blue-500/10">
+									<Users className="h-5 w-5 text-blue-600 dark:text-blue-500" />
 								</div>
 								<div>
 									<p className="text-sm font-bold text-[var(--card-foreground)]">Nuevo Cliente</p>
 									<p className="text-xs text-stone-500">Registrar contacto</p>
 								</div>
 							</div>
-							<ArrowUpRight className="h-4 w-4 text-stone-300 group-hover:text-blue-500 transition-colors" />
+							<ArrowUpRight className="h-4 w-4 text-stone-300 dark:text-stone-600 group-hover:text-blue-500 transition-colors" />
 						</a>
 					</div>
 				</div>

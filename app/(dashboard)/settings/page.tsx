@@ -126,7 +126,7 @@ export default function SettingsPage() {
 			<div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3">
 				{/* Profile Card */}
 				<div className="lg:col-span-1 space-y-4 md:space-y-6">
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border">
 						<h2 className="mb-6 text-sm font-bold text-stone-400 uppercase tracking-wider">
 							Tu Perfil
 						</h2>
@@ -149,8 +149,8 @@ export default function SettingsPage() {
 								</p>
 							</div>
 						</div>
-						<div className="mt-8 border-t border-stone-100 pt-6">
-							<button className="cursor-pointer w-full rounded-xl border border-stone-200 py-3 text-sm font-bold text-[var(--foreground)] transition-all text-center hover:bg-[var(--secondary-card)]">
+						<div className="mt-8 border-t border-border pt-6">
+							<button className="cursor-pointer w-full rounded-xl border border-border py-3 text-sm font-bold text-[var(--foreground)] transition-all text-center hover:bg-[var(--secondary-card)]">
 								Editar información
 							</button>
 						</div>
@@ -160,7 +160,7 @@ export default function SettingsPage() {
 				{/* User Management Section (Admin Only) */}
 				<div className="lg:col-span-2 space-y-6 md:space-y-8">
 					{!isAdmin && (
-						<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200 flex items-center gap-4 bg-amber-50/50 border-amber-200">
+						<div className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border flex items-center gap-4 bg-amber-50/50 border-amber-200">
 							<AlertCircle className="h-6 w-6 text-amber-600" />
 							<div>
 								<h3 className="text-sm font-bold text-amber-800">
@@ -178,7 +178,7 @@ export default function SettingsPage() {
 					{isAdmin && (
 						<>
 							{/* Add User Form */}
-							<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+							<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border">
 								<div className="mb-6 flex items-center gap-3">
 									<UserPlus className="h-5 w-5 text-amber-600" />
 									<h2 className="text-lg font-bold text-[var(--card-foreground)]">
@@ -211,7 +211,7 @@ export default function SettingsPage() {
 															.value
 													)
 												}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none"
+												className="w-full rounded-xl border border-border bg-[var(--card)] px-4 py-2 text-sm outline-none"
 											/>
 										</div>
 										<div className="space-y-1.5">
@@ -234,7 +234,7 @@ export default function SettingsPage() {
 															.value
 													)
 												}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none"
+												className="w-full rounded-xl border border-border bg-[var(--card)] px-4 py-2 text-sm outline-none"
 											/>
 										</div>
 										<div className="space-y-1.5">
@@ -257,7 +257,7 @@ export default function SettingsPage() {
 															.value
 													)
 												}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none"
+												className="w-full rounded-xl border border-border bg-[var(--card)] px-4 py-2 text-sm outline-none"
 											/>
 										</div>
 										<div className="space-y-1.5">
@@ -279,7 +279,7 @@ export default function SettingsPage() {
 															.value as any
 													)
 												}
-												className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2 text-sm outline-none"
+												className="w-full rounded-xl border border-border bg-[var(--card)] px-4 py-2 text-sm outline-none"
 											>
 												<option value="user">
 													Colaborador
@@ -319,7 +319,7 @@ export default function SettingsPage() {
 							</section>
 
 							{/* Users List */}
-							<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+							<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-border">
 								<div className="mb-6 flex items-center justify-between">
 									<h2 className="text-lg font-bold text-[var(--card-foreground)]">
 										Gestionar Cuentas
@@ -330,7 +330,7 @@ export default function SettingsPage() {
 										<input
 											type="text"
 											placeholder="Buscar..."
-											className="w-full rounded-lg bg-[var(--card)] py-1.5 pl-9 pr-3 text-xs outline-none border border-stone-100"
+											className="w-full rounded-lg bg-[var(--card)] py-1.5 pl-9 pr-3 text-xs outline-none border border-border"
 										/>
 									</div>
 								</div>
@@ -339,7 +339,7 @@ export default function SettingsPage() {
 									{activeUsers.map((u) => (
 										<div
 											key={u.id}
-											className="flex items-center justify-between p-4 rounded-2xl border border-stone-100 bg-[var(--card)]"
+											className="flex items-center justify-between p-4 rounded-2xl border border-border bg-[var(--card)]"
 										>
 											<div className="flex items-center gap-3">
 												<div className="h-10 w-10 rounded-full bg-stone-200 flex items-center justify-center font-bold text-stone-500">
@@ -397,7 +397,7 @@ export default function SettingsPage() {
 			{/* Reset Password Modal */}
 			{showResetModal && resetUser && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-stone-200">
+					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-border">
 						<div className="flex items-center justify-between mb-6">
 							<div className="flex items-center gap-3">
 								<div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
@@ -463,7 +463,7 @@ export default function SettingsPage() {
 			{/* Success Modal */}
 			{showSuccessModal && resetUser && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-stone-200">
+					<div className="w-full max-w-md bg-[var(--card)] rounded-3xl shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-border">
 						<div className="flex flex-col items-center text-center space-y-4">
 							<div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
 								<CheckCircle2 className="h-8 w-8" />
@@ -478,11 +478,11 @@ export default function SettingsPage() {
 								</p>
 							</div>
 
-							<div className="w-full bg-stone-50 border border-stone-100 rounded-xl p-4">
+							<div className="w-full bg-[var(--secondary-card)] border border-border rounded-xl p-4">
 								<p className="text-xs font-bold text-stone-400 uppercase mb-2">
 									Credenciales para {resetUser.email}
 								</p>
-								<div className="flex items-center justify-center gap-2 bg-white rounded-lg p-3 border border-stone-200">
+								<div className="flex items-center justify-center gap-2 bg-[var(--card)] rounded-lg p-3 border border-border">
 									<code className="text-lg font-mono font-bold text-amber-600 select-all">
 										{resetUser.tempPass}
 									</code>
