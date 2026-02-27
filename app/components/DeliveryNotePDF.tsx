@@ -4,10 +4,13 @@ import { jsPDF } from "jspdf";
 
 // Types for form data
 export interface DeliveryNoteItem {
-	quantity: string;
+	quantity: string | number;
 	description: string;
-	price?: string;
-	amount?: string;
+	detail?: string;
+	price?: string | number;
+	unitPrice?: string | number;
+	amount?: string | number;
+	subtotal?: string | number;
 }
 
 export interface DeliveryNoteData {
@@ -281,6 +284,20 @@ export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 	doc.setLineWidth(0.5);
 	doc.line(margin, customerY, pageWidth - margin, customerY);
 
+	// Helper para parsear números que pueden venir con comas o puntos (ej: "1.000,50" o "1000.50")
+	const parseNumber = (val: any) => {
+		if (!val) return 0;
+		if (typeof val === 'number') return val;
+		let s = String(val).trim();
+		if (s.includes('.') && s.includes(',')) {
+			s = s.replace(/\./g, '').replace(',', '.');
+		} else if (s.includes(',')) {
+			s = s.replace(',', '.');
+		}
+		const parsed = parseFloat(s);
+		return isNaN(parsed) ? 0 : parsed;
+	};
+
 	// ==================== DETAILS TABLE ====================
 
 	const tableY = customerY + 8;
@@ -333,24 +350,31 @@ export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 		if (rowIndex < data.items.length) {
 			const item = data.items[rowIndex];
 
+			const itemDesc = item.description || item.detail || "";
+			const itemPrice = item.price || item.unitPrice;
+			const itemAmount = item.amount || item.subtotal;
+
 			// Cantidad (Centered)
 			if (item.quantity) {
-				doc.text(String(item.quantity), colQtyX + colQtyW / 2, currentY - 2.5, { align: "center" });
+				const qtyVal = parseNumber(item.quantity);
+				if (qtyVal) {
+					doc.text(String(item.quantity), colQtyX + colQtyW / 2, currentY - 2.5, { align: "center" });
+				}
 			}
 
 			// Description
-			if (item.description) {
-				const desc = item.description.length > 55 ? item.description.substring(0, 52) + "..." : item.description;
+			if (itemDesc) {
+				const desc = itemDesc.length > 55 ? itemDesc.substring(0, 52) + "..." : itemDesc;
 				doc.text(desc, colDescX + 2, currentY - 2.5);
 			}
 
 			// Unit Price
-			if (item.price) {
-				const priceVal = parseFloat(item.price);
-				if (!isNaN(priceVal)) {
+			if (itemPrice) {
+				const priceVal = parseNumber(itemPrice);
+				if (priceVal) {
 					doc.text(
 						`$ ${priceVal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`,
-						colTotalX - 2, // Right aligned in Price column? No, colTotalX is start of Total col. Price col ends at colTotalX.
+						colTotalX - 2,
 						currentY - 2.5,
 						{ align: "right" }
 					);
@@ -358,9 +382,9 @@ export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 			}
 
 			// Total
-			if (item.amount) {
-				const amountVal = parseFloat(item.amount);
-				if (!isNaN(amountVal)) {
+			if (itemAmount) {
+				const amountVal = parseNumber(itemAmount);
+				if (amountVal) {
 					doc.text(
 						`$ ${amountVal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}`,
 						pageWidth - margin - 2,
@@ -374,7 +398,7 @@ export async function getDeliveryNoteDoc(data: DeliveryNoteData) {
 	}
 
 	// ==================== GRAND TOTAL ====================
-	const totalAmount = data.items.reduce((sum, item) => sum + (parseFloat(item.amount || "0") || 0), 0);
+	const totalAmount = data.items.reduce((sum, item) => sum + parseNumber(item.amount || item.subtotal), 0);
 
 	doc.setFontSize(12);
 	doc.setFont("helvetica", "bold");

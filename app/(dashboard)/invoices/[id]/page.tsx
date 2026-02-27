@@ -25,7 +25,7 @@ export default function InvoiceDetailPage() {
 	const fetchInvoice = async () => {
 		try {
 			setLoading(true);
-			const res = await fetch(`/api/invoices/${id}`);
+			const res = await fetch(`/api/invoices/${id}`); // Esto tiene que devolver el price del item
 			const data = await res.json();
 
 			if (data) {

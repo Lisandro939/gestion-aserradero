@@ -3,12 +3,15 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export interface InvoiceItem {
-	quantity: string;
+	quantity: string | number;
 	description: string;
-	code: string;
-	price: string;
-	discount: string;
-	amount: string;
+	detail?: string;
+	code?: string;
+	price?: string | number;
+	unitPrice?: string | number;
+	discount?: string | number;
+	amount?: string | number;
+	subtotal?: string | number;
 }
 
 export interface InvoiceData {
@@ -191,12 +194,29 @@ export async function getInvoiceDoc(data: InvoiceData) {
 
 	// --- 4. Items Table ---
 
+	// Helper para parsear números que pueden venir con comas o puntos (ej: "1.000,50" o "1000.50")
+	const parseNumber = (val: any) => {
+		if (!val) return 0;
+		if (typeof val === 'number') return val;
+		let s = String(val).trim();
+		// Si tiene punto y coma, asumimos punto como separador de miles y coma como decimal
+		if (s.includes('.') && s.includes(',')) {
+			s = s.replace(/\./g, '').replace(',', '.');
+		} else if (s.includes(',')) {
+			// Si solo tiene coma, asumimos que es decimal
+			s = s.replace(',', '.');
+		}
+		const parsed = parseFloat(s);
+		return isNaN(parsed) ? 0 : parsed;
+	};
+
 	// Prepare table body
 	const tableBody = data.items.map(item => {
-		const unitPrice = parseFloat(item.price);
-		const quantity = parseFloat(item.quantity);
-		const discount = parseFloat(item.discount) || 0;
-		let amount = parseFloat(item.amount);
+		const unitPrice = parseNumber(item.price || item.unitPrice);
+		const quantity = parseNumber(item.quantity);
+		const discount = parseNumber(item.discount) || 0;
+		let amount = parseNumber(item.amount || item.subtotal);
+		const desc = item.description || item.detail || "";
 
 		// Recalculate amount if needed ensures consistency
 		if (!amount && unitPrice && quantity) {
@@ -205,18 +225,18 @@ export async function getInvoiceDoc(data: InvoiceData) {
 
 		return [
 			item.quantity,
-			item.description.toUpperCase(),
+			desc.toUpperCase(),
 			item.code || "-",
-			unitPrice ? unitPrice.toLocaleString("es-AR", { minimumFractionDigits: 2 }) : "",
+			unitPrice ? `$ ${unitPrice.toLocaleString("es-AR", { minimumFractionDigits: 2 })}` : "-",
 			discount > 0 ? `${discount}%` : "-",
-			amount ? amount.toLocaleString("es-AR", { minimumFractionDigits: 2 }) : ""
+			amount ? `$ ${amount.toLocaleString("es-AR", { minimumFractionDigits: 2 })}` : "-"
 		];
 	});
 
 	// @ts-ignore
 	autoTable(doc, {
 		startY: tableTopY,
-		head: [['CANTIDAD', 'DESCRIPCION', 'COD.', 'PRECIO', 'DTO', 'IMPORTE']],
+		head: [['CANTIDAD', 'DESCRIPCION', 'COD.', 'PRECIO', 'DTO', 'IMPORTE']], // ESTÁ PONIENDO MAL EL PRECIO
 		body: tableBody,
 		theme: 'plain',
 		styles: {
@@ -273,7 +293,7 @@ export async function getInvoiceDoc(data: InvoiceData) {
 	const totalBoxY = finalY;
 
 	// Total Label and Value
-	const total = data.items.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+	const total = data.items.reduce((sum, item) => sum + parseNumber(item.amount || item.subtotal), 0);
 
 	doc.setDrawColor(0);
 	doc.setLineWidth(0.5);

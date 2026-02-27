@@ -138,8 +138,8 @@ export default function GenerateDeliveryNoteTab() {
 			// Validate items for price calculation
 			const itemsWithPrice = formData.items.map(item => ({
 				...item,
-				price: parseFloat(item.price || "0"),
-				amount: parseFloat(item.amount || "0"),
+				price: parseFloat(String(item.price || "0")),
+				amount: parseFloat(String(item.amount || "0")),
 			}));
 
 			// Save Delivery Note to Database
@@ -156,7 +156,7 @@ export default function GenerateDeliveryNoteTab() {
 					customerCuit: formData.taxId,
 					items: itemsWithPrice.map(item => ({
 						description: item.description,
-						quantity: parseInt(item.quantity) || 0,
+						quantity: parseInt(String(item.quantity)) || 0,
 						unitPrice: item.price,
 						subtotal: item.amount
 					})),
@@ -240,6 +240,19 @@ export default function GenerateDeliveryNoteTab() {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
+	const parseNumericInput = (val: string | number | undefined | null) => {
+		if (!val) return 0;
+		if (typeof val === 'number') return val;
+		let s = String(val).trim();
+		if (s.includes('.') && s.includes(',')) {
+			s = s.replace(/\./g, '').replace(',', '.');
+		} else if (s.includes(',')) {
+			s = s.replace(',', '.');
+		}
+		const parsed = parseFloat(s);
+		return isNaN(parsed) ? 0 : parsed;
+	};
+
 	const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
@@ -281,8 +294,8 @@ export default function GenerateDeliveryNoteTab() {
 
 			// Calculate Total if Quantity or Price changes
 			if (field === "quantity" || field === "price") {
-				const qty = parseFloat(newItems[index].quantity) || 0;
-				const price = parseFloat(newItems[index].price || "0") || 0;
+				const qty = parseNumericInput(newItems[index].quantity);
+				const price = parseNumericInput(newItems[index].price);
 				newItems[index].amount = (qty * price).toFixed(2);
 			}
 
@@ -331,16 +344,16 @@ export default function GenerateDeliveryNoteTab() {
 	};
 
 	// Calculate Grand Total
-	const grandTotal = formData.items.reduce((sum, item) => sum + (parseFloat(item.amount || "0") || 0), 0);
+	const grandTotal = formData.items.reduce((sum, item) => sum + parseNumericInput(item.amount), 0);
 
 	return (
 		<div className="space-y-3 md:space-y-4">
 			<div className="grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 lg:grid-cols-2">
 				{/* Step 1 & 2: Document & Client Info */}
 				<div className="space-y-4 md:space-y-6 lg:space-y-8">
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-[var(--border)]">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs text-amber-600">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs text-amber-500">
 								<FileText className="h-4 w-4" />
 							</div>
 							Información del Documento
@@ -354,7 +367,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="salePoint"
 									value={formData.salePoint}
 									onChange={handleSelectChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 								>
 									<option value="001">001</option>
 									<option value="002">002</option>
@@ -370,7 +383,7 @@ export default function GenerateDeliveryNoteTab() {
 									value={formData.documentNumber}
 									onChange={handleChange}
 									placeholder="Opcional"
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 								/>
 							</div>
 							<div>
@@ -382,15 +395,15 @@ export default function GenerateDeliveryNoteTab() {
 									name="date"
 									value={formData.date}
 									onChange={handleChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 								/>
 							</div>
 						</div>
 					</section>
 
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-[var(--border)]">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-xs text-blue-600">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/15 text-xs text-blue-500">
 								<User className="h-4 w-4" />
 							</div>
 							Información del Cliente
@@ -402,7 +415,7 @@ export default function GenerateDeliveryNoteTab() {
 								</label>
 								<select
 									onChange={handleCustomerSelect}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 									defaultValue=""
 								>
 									<option value="" disabled>Seleccione un cliente</option>
@@ -423,7 +436,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="address"
 									value={formData.address}
 									readOnly
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
 								/>
 							</div>
 							<div>
@@ -436,7 +449,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="taxId"
 									value={formData.taxId}
 									readOnly
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none cursor-not-allowed text-stone-500"
 								/>
 							</div>
 						</div>
@@ -445,9 +458,9 @@ export default function GenerateDeliveryNoteTab() {
 
 				{/* Step 3: Conditions */}
 				<div className="space-y-4 md:space-y-6 lg:space-y-8">
-					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+					<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-[var(--border)]">
 						<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs text-emerald-600">
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15 text-xs text-emerald-500">
 								3
 							</div>
 							Condiciones
@@ -461,7 +474,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="saleCondition"
 									value={formData.saleCondition}
 									onChange={handleSelectChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 								>
 									<option value="cash">Contado</option>
 									<option value="currentAccount">Cuenta Corriente</option>
@@ -475,7 +488,7 @@ export default function GenerateDeliveryNoteTab() {
 									name="vatCondition"
 									value={formData.vatCondition}
 									onChange={handleSelectChange}
-									className="w-full rounded-xl border border-stone-200 bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10"
+									className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm outline-none transition-all focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 								>
 									<option value="finalConsumer">Consumidor Final</option>
 									<option value="registeredResp">Responsable Inscripto</option>
@@ -490,9 +503,9 @@ export default function GenerateDeliveryNoteTab() {
 			</div>
 
 			{/* Step 4: Items Table */}
-			<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-stone-200">
+			<section className="bg-[var(--card)] rounded-3xl p-6 shadow-sm border border-[var(--border)]">
 				<h2 className="mb-6 flex items-center gap-2 text-base font-bold text-[var(--card-foreground)]">
-					<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-xs text-amber-600">
+					<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-xs text-amber-500">
 						<ClipboardList className="h-4 w-4" />
 					</div>
 					Detalle de Entrega
@@ -555,7 +568,7 @@ export default function GenerateDeliveryNoteTab() {
 										</div>
 									</td>
 									<td className="py-2 px-4 text-right font-bold text-[var(--foreground)]">
-										$ {parseFloat(item.amount || "0").toLocaleString("es-AR", { minimumFractionDigits: 2 })}
+										$ {parseNumericInput(item.amount).toLocaleString("es-AR", { minimumFractionDigits: 2 })}
 									</td>
 									<td className="py-2 pr-4 text-center">
 										<button
@@ -635,11 +648,11 @@ export default function GenerateDeliveryNoteTab() {
 			{/* Success Modal */}
 			{showSuccessModal && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-					<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-stone-200">
-						<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+					<div className="w-full max-w-sm rounded-2xl bg-[var(--card)] p-6 shadow-xl border border-[var(--border)]">
+						<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500">
 							<FileText className="h-6 w-6" />
 						</div>
-						<h3 className="mb-2 text-lg font-bold text-stone-800">
+						<h3 className="mb-2 text-lg font-bold text-[var(--card-foreground)]">
 							¡Remito Generado!
 						</h3>
 						<p className="mb-6 text-sm text-stone-500">
@@ -647,7 +660,7 @@ export default function GenerateDeliveryNoteTab() {
 						</p>
 						<button
 							onClick={() => setShowSuccessModal(false)}
-							className="cursor-pointer w-full rounded-xl bg-stone-900 py-3 text-sm font-bold text-white transition-colors hover:bg-stone-800"
+							className="cursor-pointer w-full rounded-xl bg-[var(--card-foreground)] text-[var(--card)] py-3 text-sm font-bold transition-opacity hover:opacity-90"
 						>
 							Aceptar
 						</button>

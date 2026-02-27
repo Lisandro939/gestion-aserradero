@@ -11,10 +11,13 @@ import {
 	Loader2,
 	TrendingUp,
 	CreditCard,
-	Calendar
+	Calendar,
+	AlertTriangle,
+	ChevronRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, formatDate, getDaysUntilDue } from "@/lib/utils";
 import { SalesChart } from "@/app/components/SalesChart";
+import Link from "next/link";
 
 interface Stats {
 	totalClientes: number;
@@ -28,10 +31,24 @@ interface Stats {
 	monthlySales: any[];
 }
 
+interface AlertCheck {
+	id: number;
+	number: string;
+	bank: string;
+	drawerName: string;
+	amount: number;
+	dueDate: number | null;
+	status: string;
+	customerName: string;
+}
+
+const ALERT_DAYS = 7;
+
 export default function DashboardPage() {
 	const [mounted, setMounted] = useState(false);
 	const [stats, setStats] = useState<Stats | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [alertChecks, setAlertChecks] = useState<AlertCheck[]>([]);
 
 	// Mount component
 	useEffect(() => {
@@ -42,6 +59,7 @@ export default function DashboardPage() {
 	useEffect(() => {
 		if (!mounted) return;
 		fetchStats();
+		fetchAlertChecks();
 	}, [mounted]);
 
 	const fetchStats = async () => {
@@ -78,6 +96,24 @@ export default function DashboardPage() {
 			console.error("Error al cargar estadísticas:", error);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const fetchAlertChecks = async () => {
+		try {
+			const res = await fetch("/api/checks");
+			if (res.ok) {
+				const data: AlertCheck[] = await res.json();
+				// Filter only pending checks expiring within ALERT_DAYS (using UTC-safe diff)
+				const filtered = data.filter(c => {
+					if (c.status !== "pending" || !c.dueDate) return false;
+					const diffDays = getDaysUntilDue(c.dueDate);
+					return diffDays !== null && diffDays <= ALERT_DAYS;
+				});
+				setAlertChecks(filtered);
+			}
+		} catch (error) {
+			console.error("Error al cargar cheques de alerta:", error);
 		}
 	};
 
@@ -152,6 +188,75 @@ export default function DashboardPage() {
 					</span>
 				</div>
 			</div>
+
+			{/* Check Expiration Alert */}
+			{alertChecks.length > 0 && (
+				<motion.div
+					initial={{ opacity: 0, y: -10 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 md:p-5 shadow-sm"
+				>
+					<div className="flex items-start gap-3">
+						<div className="p-2 rounded-xl bg-red-500/15 shrink-0">
+							<AlertTriangle className="h-5 w-5 text-red-500 animate-pulse" />
+						</div>
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center justify-between gap-2 mb-2">
+								<h3 className="text-sm font-bold text-red-600 dark:text-red-400">
+									{alertChecks.length === 1
+										? '1 cheque próximo a vencer'
+										: `${alertChecks.length} cheques próximos a vencer`
+									}
+								</h3>
+								<Link
+									href="/checks"
+									className="text-xs font-bold text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors flex items-center gap-1 shrink-0"
+								>
+									Ver todos <ChevronRight className="h-3 w-3" />
+								</Link>
+							</div>
+							<div className="space-y-2">
+								{alertChecks.slice(0, 3).map((check) => {
+									const diffDays = getDaysUntilDue(check.dueDate) ?? 0;
+									const isExpired = diffDays < 0;
+
+									return (
+										<div key={check.id} className="flex items-center justify-between bg-[var(--card)] rounded-xl px-3 py-2 border border-red-500/15">
+											<div className="flex items-center gap-3 min-w-0">
+												<CreditCard className="h-4 w-4 text-red-400 shrink-0" />
+												<div className="min-w-0">
+													<p className="text-xs font-bold text-[var(--card-foreground)] truncate">
+														#{check.number} · {check.bank}
+													</p>
+													<p className="text-xs text-stone-500 truncate">
+														{check.customerName} · {check.drawerName}
+													</p>
+												</div>
+											</div>
+											<div className="text-right shrink-0 ml-3">
+												<p className="text-xs font-bold text-emerald-500">{formatCurrency(check.amount)}</p>
+												<p className={cn("text-xs font-semibold", isExpired ? "text-red-500" : "text-red-400")}>
+													{isExpired
+														? `Vencido hace ${Math.abs(diffDays)}d`
+														: diffDays === 0
+															? 'Vence hoy'
+															: `Vence en ${diffDays}d`
+													}
+												</p>
+											</div>
+										</div>
+									);
+								})}
+								{alertChecks.length > 3 && (
+									<p className="text-xs text-red-400 text-center pt-1">
+										y {alertChecks.length - 3} más...
+									</p>
+								)}
+							</div>
+						</div>
+					</div>
+				</motion.div>
+			)}
 
 			{/* Stats Grid */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">

@@ -12,6 +12,7 @@ import {
 	ChevronRight,
 	Circle,
 	DollarSign,
+	CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
@@ -24,6 +25,7 @@ const navItems = [
 	{ name: "Clientes", href: "/customers", icon: Users },
 	{ name: "Remitos", href: "/delivery-notes", icon: FileText },
 	{ name: "Facturas", href: "/invoices", icon: DollarSign },
+	{ name: "Cheques", href: "/checks", icon: CreditCard },
 	{ name: "Configuración", href: "/settings", icon: Settings },
 ];
 

@@ -153,15 +153,18 @@ export async function POST(
 				})
 				.returning();
 
-			// Si es cheque, crear registro de cheque
 			if (method === 'cheque' && cheque) {
+				// Parse "YYYY-MM-DD" string as noon UTC to avoid timezone offset off-by-one.
+				// new Date("2025-03-01") = UTC midnight = Feb 28 21:00 in Argentina (UTC-3).
+				const [y, m, d] = String(cheque.dueDate).split("-").map(Number);
+				const parsedDueDate = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
 				await tx.insert(cheques).values({
 					transactionId: newTransaction.id,
 					number: cheque.number,
 					bank: cheque.bank,
-					drawerName: cheque.drawerName || cheque.owner, // drawerName or owner
-					amount: Math.round(cheque.amount * 100), // Ensure cents
-					dueDate: new Date(cheque.dueDate),
+					drawerName: cheque.drawerName || cheque.owner,
+					amount: Math.round(cheque.amount * 100),
+					dueDate: parsedDueDate,
 					status: 'pending'
 				});
 			}

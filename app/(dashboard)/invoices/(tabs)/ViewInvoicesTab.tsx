@@ -98,7 +98,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 	return (
 		<div className="space-y-4">
 			{/* Search and Filter Bar */}
-			<div className="bg-[var(--card)] rounded-2xl p-4 flex gap-4 items-center shadow-sm border border-stone-200">
+			<div className="bg-[var(--card)] rounded-2xl p-4 flex gap-4 items-center shadow-sm border border-[var(--border)]">
 				<div className="relative flex-1">
 					<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
 					<input
@@ -106,7 +106,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 						placeholder="Buscar por número, cliente o localidad..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
-						className="w-full rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
+						className="w-full rounded-xl border border-[var(--border)] bg-[var(--secondary-card)] pl-10 pr-4 py-2 text-sm outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 					/>
 				</div>
 				<div className="relative">
@@ -114,7 +114,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 					<select
 						value={filterStatus}
 						onChange={(e) => setFilterStatus(e.target.value as "active" | "inactive")}
-						className="appearance-none rounded-xl border border-stone-200 bg-[var(--secondary-card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
+						className="appearance-none rounded-xl border border-[var(--border)] bg-[var(--secondary-card)] pl-10 pr-8 py-2 text-sm outline-none cursor-pointer focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 text-[var(--card-foreground)]"
 					>
 						<option value="active">Activas</option>
 						<option value="inactive">Bajas</option>
@@ -122,19 +122,19 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 				</div>
 			</div>
 
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-[var(--border)]">
 
 				{/* Desktop View: Table */}
 				<div className="hidden md:block overflow-x-auto -mx-4 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
-							<tr className="border-b border-stone-100">
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">N° Presupuesto</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Fecha</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Cliente</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Localidad</th>
-								<th className="pb-4 text-left text-xs font-bold text-stone-400 uppercase">Total</th>
-								<th className="pb-4 text-center text-xs font-bold text-stone-400 uppercase">Acciones</th>
+							<tr className="border-b border-[var(--border)]">
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">N° Presupuesto</th>
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">Fecha</th>
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">Cliente</th>
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">Localidad</th>
+								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">Total</th>
+								<th className="pb-4 text-center text-xs font-bold text-[var(--card-foreground)] uppercase">Acciones</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -146,7 +146,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 								</tr>
 							) : (
 								filteredInvoices.map((invoice, index) => (
-									<tr key={index} className="border-b border-stone-100">
+									<tr key={index} className="border-b border-[var(--border)]">
 										<td className="py-4 text-sm">{invoice.quoteNumber || "-"}</td>
 										<td className="py-4 text-sm">
 											{invoice.date || "-"}
@@ -160,7 +160,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 											<div className="flex items-center justify-center gap-2">
 												<button
 													onClick={() => handleViewInvoice(invoice)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 transition-all hover:text-sky-500 hover:bg-sky-100"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-500/10 transition-all hover:text-sky-500"
 													title="Ver detalle"
 												>
 													<Eye className="h-4 w-4" />
@@ -168,7 +168,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 												{filterStatus === "active" ? (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "delete", invoiceId: invoice.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-50 hover:text-red-500 transition-all"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-500/10 hover:text-red-500 transition-all"
 														title="Dar de baja"
 													>
 														<Trash2 className="h-4 w-4" />
@@ -176,7 +176,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 												) : (
 													<button
 														onClick={() => setConfirmModal({ isOpen: true, type: "restore", invoiceId: invoice.id })}
-														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-green-50 hover:text-green-500 transition-all"
+														className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-500/10 hover:text-emerald-500 transition-all"
 														title="Restaurar"
 													>
 														<RotateCcw className="h-4 w-4" />
@@ -199,7 +199,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 						</div>
 					) : (
 						filteredInvoices.map((invoice, index) => (
-							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 shadow-sm space-y-3">
+							<div key={index} className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm space-y-3">
 								<div className="flex justify-between items-start">
 									<div>
 										<p className="text-sm font-bold text-[var(--text-primary)]">
@@ -223,24 +223,24 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 									</p>
 								</div>
 
-								<div className="flex justify-end gap-2 pt-2 border-t border-stone-100">
+								<div className="flex justify-end gap-2 pt-2 border-t border-[var(--border)]">
 									<button
 										onClick={() => handleViewInvoice(invoice)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-500/10 text-sky-500 text-xs font-medium hover:bg-sky-500/20 transition-colors"
 									>
 										<Eye className="h-3 w-3" /> Ver
 									</button>
 									{filterStatus === "active" ? (
 										<button
 											onClick={() => setConfirmModal({ isOpen: true, type: "delete", invoiceId: invoice.id })}
-											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-medium hover:bg-red-500/20 transition-colors"
 										>
 											<Trash2 className="h-3 w-3" /> Baja
 										</button>
 									) : (
 										<button
 											onClick={() => setConfirmModal({ isOpen: true, type: "restore", invoiceId: invoice.id })}
-											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition-colors"
+											className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-xs font-medium hover:bg-emerald-500/20 transition-colors"
 										>
 											<RotateCcw className="h-3 w-3" /> Restaurar
 										</button>
@@ -255,8 +255,8 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 			    or could be lifted up if shared across tabs, but here it is contained) */}
 				{confirmModal.isOpen && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-						<div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-stone-200">
-							<h3 className="mb-2 text-lg font-bold text-stone-800">
+						<div className="w-full max-w-sm rounded-2xl bg-[var(--card)] p-6 shadow-xl border border-[var(--border)]">
+							<h3 className="mb-2 text-lg font-bold text-[var(--card-foreground)]">
 								{confirmModal.type === "delete" ? "Dar de baja factura" : "Restaurar factura"}
 							</h3>
 							<p className="mb-6 text-sm text-stone-500">
@@ -265,7 +265,7 @@ export default function ViewInvoicesTab({ handleViewInvoice }: ViewInvoicesTabPr
 							<div className="flex gap-3">
 								<button
 									onClick={() => setConfirmModal({ isOpen: false, type: null, invoiceId: null })}
-									className="cursor-pointer flex-1 rounded-xl bg-stone-100 py-3 text-sm font-bold text-stone-600 transition-colors hover:bg-stone-200"
+									className="cursor-pointer flex-1 rounded-xl bg-[var(--secondary-card)] py-3 text-sm font-bold text-[var(--card-foreground)] transition-colors hover:bg-[var(--border)]"
 								>
 									Cancelar
 								</button>

@@ -363,7 +363,7 @@ export default function CustomersPage() {
 			</div>
 
 			{/* Search and Filters */}
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-stone-200">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-[var(--border)]">
 				<div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center md:justify-between">
 					<div className="relative flex-1 md:max-w-md">
 						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
@@ -372,7 +372,7 @@ export default function CustomersPage() {
 							placeholder="Buscar por nombre, email o CUIT..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="w-full rounded-xl border border-stone-200 bg-[var(--card)] py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+							className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-[var(--card-foreground)]"
 						/>
 					</div>
 
@@ -381,7 +381,7 @@ export default function CustomersPage() {
 						<select
 							value={filterStatus}
 							onChange={(e) => setFilterStatus(e.target.value as any)}
-							className="flex-1 md:flex-none rounded-xl border border-stone-200 bg-[var(--card)] px-3 md:px-4 py-2 text-sm outline-none"
+							className="flex-1 md:flex-none rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 md:px-4 py-2 text-sm outline-none text-[var(--card-foreground)]"
 						>
 							<option value="all">Todos los estados</option>
 							<option value="active">Activos</option>
@@ -392,12 +392,12 @@ export default function CustomersPage() {
 			</div>
 
 			{/* Clientes Table */}
-			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-sm border border-stone-200 overflow-hidden">
+			<div className="bg-[var(--card)] rounded-2xl md:rounded-3xl p-3 md:p-6 shadow-sm border border-[var(--border)] overflow-hidden">
 				{/* Desktop Table */}
 				<div className="hidden md:block overflow-x-auto -mx-3 md:mx-0">
 					<table className="w-full min-w-[640px]">
 						<thead>
-							<tr className="border-b border-stone-100">
+							<tr className="border-b border-[var(--border)]">
 								<th className="pb-4 text-left text-xs font-bold text-[var(--card-foreground)] uppercase">
 									Cliente
 								</th>
@@ -419,11 +419,11 @@ export default function CustomersPage() {
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ delay: index * 0.05 }}
-									className="border-b border-stone-50 transition-colors"
+									className="border-b border-[var(--border)] transition-colors"
 								>
 									<td className="py-4">
 										<div className="flex items-center gap-3">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/15 text-amber-500 font-bold text-sm">
 												{customer.name.charAt(0)}
 											</div>
 											<div>
@@ -457,7 +457,7 @@ export default function CustomersPage() {
 										<div className="flex items-center justify-center gap-2">
 											<button
 												onClick={() => handleViewCustomer(customer)}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-100 hover:text-sky-600 transition-all"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-sky-500/10 hover:text-sky-500 transition-all"
 												title="Ver detalles"
 											>
 												<Eye className="h-4 w-4" />
@@ -467,7 +467,7 @@ export default function CustomersPage() {
 													setSelectedCustomer(customer);
 													setShowModal("edit");
 												}}
-												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-100 hover:text-amber-600 transition-all"
+												className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-amber-500/10 hover:text-amber-500 transition-all"
 												title="Editar"
 											>
 												<Edit className="h-4 w-4" />
@@ -475,7 +475,7 @@ export default function CustomersPage() {
 											{customer.status === "inactive" ? (
 												<button
 													onClick={() => handleRestoreClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-100 hover:text-emerald-600 transition-all"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-emerald-500/10 hover:text-emerald-500 transition-all"
 													title="Restaurar"
 												>
 													<RotateCcw className="h-4 w-4" />
@@ -483,7 +483,7 @@ export default function CustomersPage() {
 											) : (
 												<button
 													onClick={() => handleDeleteClick(customer.id)}
-													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-100 hover:text-red-600 transition-all"
+													className="cursor-pointer p-2 rounded-lg text-stone-400 hover:bg-red-500/10 hover:text-red-500 transition-all"
 													title="Eliminar"
 												>
 													<Trash2 className="h-4 w-4" />
@@ -505,10 +505,10 @@ export default function CustomersPage() {
 							initial={{ opacity: 0, y: 10 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ delay: index * 0.05 }}
-							className="bg-[var(--card)] p-4 rounded-xl border border-stone-100 shadow-sm space-y-4"
+							className="bg-[var(--card)] p-4 rounded-xl border border-[var(--border)] shadow-sm space-y-4"
 						>
-							<div className="flex items-center gap-3 border-b border-stone-100 pb-3">
-								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-sm">
+							<div className="flex items-center gap-3 border-b border-[var(--border)] pb-3">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-500 font-bold text-sm">
 									{customer.name.charAt(0)}
 								</div>
 								<div className="min-w-0 flex-1">
@@ -532,10 +532,10 @@ export default function CustomersPage() {
 								</div>
 							</div>
 
-							<div className="flex justify-end gap-2 pt-2 border-t border-stone-100">
+							<div className="flex justify-end gap-2 pt-2 border-t border-[var(--border)]">
 								<button
 									onClick={() => handleViewCustomer(customer)}
-									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 text-xs font-medium hover:bg-sky-100 transition-colors"
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-sky-500/10 text-sky-500 text-xs font-medium hover:bg-sky-500/20 transition-colors"
 								>
 									<Eye className="h-3 w-3" /> Ver
 								</button>
@@ -544,21 +544,21 @@ export default function CustomersPage() {
 										setSelectedCustomer(customer);
 										setShowModal("edit");
 									}}
-									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors"
+									className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 text-xs font-medium hover:bg-amber-500/20 transition-colors"
 								>
 									<Edit className="h-3 w-3" /> Editar
 								</button>
 								{customer.status === "inactive" ? (
 									<button
 										onClick={() => handleRestoreClick(customer.id)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition-colors"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-xs font-medium hover:bg-emerald-500/20 transition-colors"
 									>
 										<RotateCcw className="h-3 w-3" /> Restaurar
 									</button>
 								) : (
 									<button
 										onClick={() => handleDeleteClick(customer.id)}
-										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+										className="flex items-center gap-1 cursor-pointer px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-medium hover:bg-red-500/20 transition-colors"
 									>
 										<Trash2 className="h-3 w-3" /> Eliminar
 									</button>
@@ -595,9 +595,9 @@ export default function CustomersPage() {
 							onClick={(e) => e.stopPropagation()}
 							className="bg-[var(--card)] rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
 						>
-							<div className="flex items-center justify-between p-6 border-b border-stone-200">
+							<div className="flex items-center justify-between p-6 border-b border-[var(--border)]">
 								<div className="flex items-center gap-4">
-									<div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600 font-bold text-xl">
+									<div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/15 text-amber-500 font-bold text-xl">
 										{selectedCustomer.name.charAt(0)}
 									</div>
 									<div>
@@ -609,7 +609,7 @@ export default function CustomersPage() {
 								</div>
 								<button
 									onClick={() => setShowModal(null)}
-									className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 transition-colors"
+									className="p-2 rounded-lg text-stone-400 hover:bg-[var(--secondary-card)] transition-colors"
 								>
 									<X className="h-5 w-5" />
 								</button>
