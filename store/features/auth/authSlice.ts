@@ -55,9 +55,9 @@ const authSlice = createSlice({
 		logout: (state) => {
 			state.user = null;
 			state.isAuthenticated = false;
-			// Clear from localStorage
+			// Clear all localStorage
 			if (typeof window !== "undefined") {
-				localStorage.removeItem("auth_user");
+				localStorage.clear();
 			}
 		},
 		setLoading: (state, action: PayloadAction<boolean>) => {
